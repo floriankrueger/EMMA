@@ -25,20 +25,23 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 const App: React.FC = () => {
-
   const [selectedPage, setSelectedPage] = useState('');
 
   return (
     <IonApp>
       <IonReactRouter>
-        <IonSplitPane contentId="main">
+        <IonSplitPane contentId='main'>
           <Menu selectedPage={selectedPage} />
-          <IonRouterOutlet id="main">
-            <Route path="/page/:name" render={(props) => {
-              setSelectedPage(props.match.params.name);
-              return <Page {...props} />;
-            }} exact={true} />
-            <Route path="/" render={() => <Redirect to="/page/Inbox" />} exact={true} />
+          <IonRouterOutlet id='main'>
+            <Route
+              path='/page/:name'
+              render={props => {
+                setSelectedPage(props.match.params.name);
+                return <Page {...props} />;
+              }}
+              exact={true}
+            />
+            <Route path='/' render={() => <Redirect to='/page/Inbox' />} exact={true} />
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
