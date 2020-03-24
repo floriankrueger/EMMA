@@ -1,0 +1,14 @@
+ion-content#menu-header {
+  height: 200px;
+  --background: #ffffff;
+}
+
+#menu-header ion-img {
+  width: 160px;
+  height: 102px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}

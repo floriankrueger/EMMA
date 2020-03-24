@@ -1,101 +1,105 @@
-import {
-  IonContent,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonMenu,
-  IonMenuToggle,
-  IonNote,
-} from '@ionic/react';
+import { IonContent, IonThumbnail, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonFooter } from '@ionic/react';
 import React from 'react';
+import MenuHeader from './MenuHeader';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 
-interface MenuProps extends RouteComponentProps {
-  selectedPage: string;
-}
+interface MenuProps extends RouteComponentProps {}
 
 interface AppPage {
-  url: string;
-  iosIcon: string;
-  mdIcon: string;
   title: string;
+  url: string;
+  icon: string;
 }
 
 const appPages: AppPage[] = [
   {
-    title: 'Inbox',
-    url: '/page/Inbox',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
+    title: 'Aktuelles',
+    url: '/aktuelles',
+    icon: 'assets/icon_aktuelles.svg'
   },
   {
-    title: 'Outbox',
-    url: '/page/Outbox',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
+    title: 'EMMA:Buddys',
+    url: '/buddys',
+    icon: 'assets/icon_buddys.svg'
   },
   {
-    title: 'Favorites',
-    url: '/page/Favorites',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp
+    title: 'Chats',
+    url: '/chats',
+    icon: 'assets/icon_chats.svg'
   },
   {
-    title: 'Archived',
-    url: '/page/Archived',
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp
+    title: 'Karte',
+    url: '/karte',
+    icon: 'assets/icon_karte.svg'
   },
   {
-    title: 'Trash',
-    url: '/page/Trash',
-    iosIcon: trashOutline,
-    mdIcon: trashSharp
-  },
-  {
-    title: 'Spam',
-    url: '/page/Spam',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
+    title: 'F.A.Q.',
+    url: '/faq',
+    icon: 'assets/icon_faq.svg'
   }
 ];
 
-const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+interface SecondaryPage {
+  title: string;
+  url: string;
+}
 
-const Menu: React.FunctionComponent<MenuProps> = ({ selectedPage }) => {
+const appSecondaryPages: SecondaryPage[] = [
+  {
+    title: 'Impressum',
+    url: '/impressum'
+  }
+];
 
+const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
   return (
-    <IonMenu contentId="main" type="overlay">
+    <IonMenu contentId='main' type='overlay'>
+      {/* Menu */}
       <IonContent>
-        <IonList id="inbox-list">
-          <IonListHeader>Inbox</IonListHeader>
-          <IonNote>hi@ionicframework.com</IonNote>
+        <MenuHeader />
+        <IonList id='main-menu'>
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={selectedPage === appPage.title ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                  <IonIcon slot="start" icon={appPage.iosIcon} />
-                  <IonLabel>{appPage.title}</IonLabel>
+                <IonItem
+                  className={location.pathname.toLowerCase().startsWith(appPage.url.toLowerCase()) ? 'selected' : ''}
+                  routerLink={appPage.url}
+                  routerDirection='none'
+                  lines='none'
+                  detail={false}
+                >
+                  <IonThumbnail className='menu-icon' slot='start'>
+                    <img src={appPage.icon} alt='' />
+                  </IonThumbnail>
+                  <IonLabel className='menu-label'>{appPage.title}</IonLabel>
                 </IonItem>
               </IonMenuToggle>
             );
           })}
         </IonList>
-
-        <IonList id="labels-list">
-          <IonListHeader>Labels</IonListHeader>
-          {labels.map((label, index) => (
-            <IonItem lines="none" key={index}>
-              <IonIcon slot="start" icon={bookmarkOutline} />
-              <IonLabel>{label}</IonLabel>
-            </IonItem>
-          ))}
-        </IonList>
       </IonContent>
+
+      {/* Footer (Impressum) --> */}
+      <IonFooter>
+        <IonList id='secondary-menu'>
+          {appSecondaryPages.map((secondaryPage, index) => {
+            return (
+              <IonMenuToggle key={index} autoHide={false}>
+                <IonItem
+                  className={location.pathname.toLowerCase().startsWith(secondaryPage.url.toLowerCase()) ? 'selected' : ''}
+                  routerLink={secondaryPage.url}
+                  routerDirection='none'
+                  lines='none'
+                  detail={false}
+                >
+                  <IonLabel className='menu-label'>{secondaryPage.title}</IonLabel>
+                </IonItem>
+              </IonMenuToggle>
+            );
+          })}
+        </IonList>
+      </IonFooter>
     </IonMenu>
   );
 };

@@ -1,8 +1,13 @@
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
+/** Custom Fonts **/
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
 /** Ionic CSS Variables **/
 :root {
+  --ion-font-family: 'Lato', sans-serif;
+
   /** primary **/
   --ion-color-primary: #3880ff;
   --ion-color-primary-rgb: 56, 128, 255;
@@ -79,10 +84,6 @@ http://ionicframework.com/docs/theming/ */
 ion-split-pane {
   --side-width: 250px;
 }
-
-/* ion-menu {
-  --background: #566a7d;
-} */
 
 @media (prefers-color-scheme: dark) {
   /*

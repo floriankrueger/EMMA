@@ -1,6 +1,11 @@
 import Menu from './components/Menu';
-import Page from './pages/Page';
-import React, { useState } from 'react';
+import Aktuelles from './pages/Aktuelles';
+import Buddys from './pages/Buddys';
+import Chats from './pages/Chats';
+import Karte from './pages/Karte';
+import FAQ from './pages/FAQ';
+import Impressum from './pages/Impressum';
+import React from 'react';
 import { IonApp, IonRouterOutlet, IonSplitPane } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
@@ -25,23 +30,55 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 const App: React.FC = () => {
-  const [selectedPage, setSelectedPage] = useState('');
-
   return (
     <IonApp>
       <IonReactRouter>
         <IonSplitPane contentId='main'>
-          <Menu selectedPage={selectedPage} />
+          <Menu />
           <IonRouterOutlet id='main'>
             <Route
-              path='/page/:name'
+              path='/aktuelles'
               render={props => {
-                setSelectedPage(props.match.params.name);
-                return <Page {...props} />;
+                return <Aktuelles />;
               }}
               exact={true}
             />
-            <Route path='/' render={() => <Redirect to='/page/Inbox' />} exact={true} />
+            <Route
+              path='/buddys'
+              render={props => {
+                return <Buddys />;
+              }}
+              exact={true}
+            />
+            <Route
+              path='/chats'
+              render={props => {
+                return <Chats />;
+              }}
+              exact={true}
+            />
+            <Route
+              path='/karte'
+              render={props => {
+                return <Karte />;
+              }}
+              exact={true}
+            />
+            <Route
+              path='/faq'
+              render={props => {
+                return <FAQ />;
+              }}
+              exact={true}
+            />
+            <Route
+              path='/impressum'
+              render={props => {
+                return <Impressum />;
+              }}
+              exact={true}
+            />
+            <Route path='/' render={() => <Redirect to='/aktuelles' />} exact={true} />
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
