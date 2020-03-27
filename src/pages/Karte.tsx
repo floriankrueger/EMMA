@@ -24,7 +24,7 @@ const Karte = observer(() => {
       </IonHeader>
 
       <IonContent>
-        <GoogleMapReact bootstrapURLKeys={{ key: process.env.REACT_APP_MAPS_API_KEY }} defaultCenter={{ lat: 51.9625, lng: 7.6256 }} defaultZoom={12}>
+        <GoogleMapReact bootstrapURLKeys={{ key: process.env.REACT_APP_FIREBASE_API_KEY }} defaultCenter={{ lat: 51.9625, lng: 7.6256 }} defaultZoom={12}>
           {markerStore.institutionLocations.map((location, index) => {
             return <Marker key={index} lat={location.lat} lng={location.lng} color={location.color} id={location.id} onSelect={selectMarker} />;
           })}
