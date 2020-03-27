@@ -1,25 +1,21 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar } from '@ionic/react';
 import React from 'react';
 import './Buddys.css';
+import PageHeader from '../components/PageHeader';
 
 const Buddys: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader className='ion-no-border'>
         <IonToolbar>
           <IonButtons slot='start'>
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Buddys</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent>
-        <IonHeader collapse='condense'>
-          <IonToolbar>
-            <IonTitle size='large'>Buddys</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        <PageHeader assetName='buddys' title='EMMA:Buddys' copy='Klicke einen EMMA:Buddy an, um mehr zu erfahren oder einen Chat zu starten.' />
       </IonContent>
     </IonPage>
   );

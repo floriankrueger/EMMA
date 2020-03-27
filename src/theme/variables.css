@@ -2,19 +2,159 @@
 http://ionicframework.com/docs/theming/ */
 
 /** Custom Fonts **/
-@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900&display=swap');
+
+/** Text Styles **/
+body {
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.72222;
+  color: #34495e;
+  background-color: #fff;
+}
+
+a {
+  color: #16a085;
+  text-decoration: none;
+  transition: 0.25s;
+}
+
+a:hover,
+a:focus {
+  color: #1abc9c;
+  text-decoration: none;
+}
+
+a:focus {
+  outline: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: inherit;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #34495e;
+  letter-spacing: 0.1em;
+}
+
+h1 small,
+h2 small,
+h3 small,
+h4 small,
+h5 small,
+h6 small {
+  color: #e7e9ec;
+}
+
+h1,
+h2,
+h3 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+h4,
+h5,
+h6 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+h6 {
+  font-weight: normal;
+}
+
+h1 {
+  font-size: 61px;
+}
+
+h2 {
+  font-size: 53px;
+}
+
+h3 {
+  font-size: 40px;
+}
+
+h4 {
+  font-size: 29px;
+}
+
+h5 {
+  font-size: 28px;
+}
+
+h6 {
+  font-size: 24px;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.72222;
+  margin: 0 0 15px;
+  color: #34495e;
+}
+
+.lead {
+  margin-bottom: 30px;
+  font-size: 28px;
+  line-height: 1.46428571;
+  font-weight: 300;
+}
+
+@media (min-width: 768px) {
+  .lead {
+    font-size: 30.006px;
+  }
+}
+
+small,
+.small {
+  font-size: 83%;
+  line-height: 2.067;
+}
+
+.lead {
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
+  color: rgb(52, 73, 94);
+  font-weight: 300;
+  line-height: 1.46;
+  font-size: 20px;
+}
+
+p.callout {
+  border: 2px solid #bdc3c7;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+p.callout-error {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+a.to-top {
+  padding-left: 10px;
+  font-size: 16px;
+  letter-spacing: 0;
+}
 
 /** Ionic CSS Variables **/
 :root {
   --ion-font-family: 'Lato', sans-serif;
 
   /** primary **/
-  --ion-color-primary: #3880ff;
+  --ion-color-primary: #16a085;
   --ion-color-primary-rgb: 56, 128, 255;
-  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast: #ecf0f1;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3171e0;
-  --ion-color-primary-tint: #4c8dff;
+  --ion-color-primary-shade: #1abc9c;
+  --ion-color-primary-tint: #1abc9c;
 
   /** secondary **/
   --ion-color-secondary: #3dc2ff;

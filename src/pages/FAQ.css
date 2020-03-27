@@ -1,3 +1,18 @@
 ion-content ion-toolbar {
   --background: transparent;
 }
+
+ul.faq-link-list {
+  padding: 0;
+  list-style-type: none;
+  margin-bottom: 50px;
+}
+
+ul.faq-link-list li {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.faq-entry {
+  margin-top: 50px;
+}

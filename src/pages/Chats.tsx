@@ -1,25 +1,21 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar } from '@ionic/react';
 import React from 'react';
 import './Chats.css';
+import PageHeader from '../components/PageHeader';
 
 const Chats: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader className='ion-no-border'>
         <IonToolbar>
           <IonButtons slot='start'>
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Chats</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent>
-        <IonHeader collapse='condense'>
-          <IonToolbar>
-            <IonTitle size='large'>Chats</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        <PageHeader assetName='chats' title='Chats' />
       </IonContent>
     </IonPage>
   );

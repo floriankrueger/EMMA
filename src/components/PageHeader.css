@@ -1,0 +1,24 @@
+ion-col.header-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: center;
+}
+
+.header-col hr {
+  border-top: 1px solid #1dbd9b;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.header-col p.lead {
+  margin-top: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#page-header img {
+  width: 75px;
+  height: 75px;
+}

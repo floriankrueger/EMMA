@@ -1,28 +1,34 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar } from '@ionic/react';
 import React from 'react';
+import { observer } from 'mobx-react';
 import './Aktuelles.css';
+import PageHeader from '../components/PageHeader';
+import BlogPostPreviewList from '../components/BlogPostPreviewList';
+import { useStores } from '../hooks/use-stores';
 
-const Aktuelles: React.FC = () => {
+const Aktuelles = observer(() => {
+  const { blogStore } = useStores();
+
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader className='ion-no-border'>
         <IonToolbar>
           <IonButtons slot='start'>
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Aktuelles</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent>
-        <IonHeader collapse='condense'>
-          <IonToolbar>
-            <IonTitle size='large'>Aktuelles</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        <PageHeader
+          assetName='aktuelles_header'
+          title='Aktuelles'
+          copy='Auf dieser Seite findest du regelmäßig neue Beiträge zu Themen wie Erziehung, Gesundheit oder Krisenbewältigung.'
+        />
+        <BlogPostPreviewList blogPostPreviewItems={blogStore.currentBlogEntries} />
       </IonContent>
     </IonPage>
   );
-};
+});
 
 export default Aktuelles;

@@ -1,0 +1,16 @@
+.blog-post-preview {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.blog-post-preview a {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.blog-post-preview img {
+  object-fit: cover;
+  height: 312px;
+}
