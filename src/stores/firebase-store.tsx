@@ -33,4 +33,9 @@ export class FirebaseStore {
   get isAnonymous(): boolean {
     return (this.user && this.user.isAnonymous) || false;
   }
+
+  @computed
+  get isWellKnown(): boolean {
+    return (this.user && !this.user.isAnonymous) || false;
+  }
 }

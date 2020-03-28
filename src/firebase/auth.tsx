@@ -6,9 +6,41 @@ import { TUser } from '../models';
 export function signInAnonymously() {
   firebase
     .auth()
-    .signInAnonymously()
+    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => {
+      firebase.auth().signInAnonymously();
+    })
     .catch(error => {
       console.error(error.message, error.code);
+    });
+}
+
+export function signOut(callback: (success: boolean) => void) {
+  firebase
+    .auth()
+    .signOut()
+    .then(() => {
+      callback(true);
+    })
+    .catch(function(error) {
+      console.error(error.message, error.code);
+      callback(false);
+    });
+}
+
+export function signInWithEmailAndPassword(email: string, password: string, rememberMe: boolean, callback: (success: boolean) => void) {
+  firebase
+    .auth()
+    .setPersistence(rememberMe ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION)
+    .then(() => {
+      firebase.auth().signInWithEmailAndPassword(email, password);
+    })
+    .then(() => {
+      callback(true);
+    })
+    .catch(function(error) {
+      console.error(error.message, error.code);
+      callback(false);
     });
 }
 

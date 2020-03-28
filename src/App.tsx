@@ -12,6 +12,7 @@ import Buddys from './pages/Buddys';
 import Chats from './pages/Chats';
 import Karte from './pages/Karte';
 import FAQ from './pages/FAQ';
+import Anmeldung from './pages/Anmeldung';
 import Impressum from './pages/Impressum';
 
 /* Core CSS required for Ionic components to work properly */
@@ -74,6 +75,13 @@ const App = observer(() => {
               path='/faq'
               render={props => {
                 return <FAQ />;
+              }}
+              exact={true}
+            />
+            <Route
+              path='/anmeldung'
+              render={props => {
+                return <Anmeldung />;
               }}
               exact={true}
             />

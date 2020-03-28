@@ -2,6 +2,8 @@ import { IonContent, IonThumbnail, IonItem, IonLabel, IonList, IonMenu, IonMenuT
 import React from 'react';
 import MenuHeader from './MenuHeader';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { observer } from 'mobx-react';
+import { useStores } from '../hooks';
 import './Menu.css';
 
 interface MenuProps extends RouteComponentProps {}
@@ -10,49 +12,63 @@ interface AppPage {
   title: string;
   url: string;
   icon: string;
+  wellKnownUsersOnly: boolean;
 }
 
 const appPages: AppPage[] = [
   {
     title: 'Aktuelles',
     url: '/aktuelles',
-    icon: 'assets/icon_aktuelles.svg'
+    icon: 'assets/icon_aktuelles.svg',
+    wellKnownUsersOnly: false
   },
   {
     title: 'EMMA:Buddys',
     url: '/buddys',
-    icon: 'assets/icon_buddys.svg'
+    icon: 'assets/icon_buddys.svg',
+    wellKnownUsersOnly: false
   },
   {
     title: 'Chats',
     url: '/chats',
-    icon: 'assets/icon_chats.svg'
+    icon: 'assets/icon_chats.svg',
+    wellKnownUsersOnly: false
   },
   {
     title: 'Karte',
     url: '/karte',
-    icon: 'assets/icon_karte.svg'
+    icon: 'assets/icon_karte.svg',
+    wellKnownUsersOnly: false
   },
   {
     title: 'F.A.Q.',
     url: '/faq',
-    icon: 'assets/icon_faq.svg'
+    icon: 'assets/icon_faq.svg',
+    wellKnownUsersOnly: false
   }
 ];
 
 interface SecondaryPage {
   title: string;
   url: string;
+  wellKnownUsersOnly: boolean;
 }
 
 const appSecondaryPages: SecondaryPage[] = [
   {
+    title: 'Abmelden',
+    url: '/anmeldung',
+    wellKnownUsersOnly: true
+  },
+  {
     title: 'Impressum',
-    url: '/impressum'
+    url: '/impressum',
+    wellKnownUsersOnly: false
   }
 ];
 
 const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
+  const { firebaseStore } = useStores();
   return (
     <IonMenu contentId='main' type='overlay'>
       {/* Menu */}
@@ -60,6 +76,9 @@ const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
         <MenuHeader />
         <IonList id='main-menu'>
           {appPages.map((appPage, index) => {
+            if (appPage.wellKnownUsersOnly && !firebaseStore.isWellKnown) {
+              return null;
+            }
             return (
               <IonMenuToggle key={index} autoHide={false}>
                 <IonItem
@@ -80,10 +99,13 @@ const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
         </IonList>
       </IonContent>
 
-      {/* Footer (Impressum) --> */}
+      {/* Footer (Abmelden, Impressum) --> */}
       <IonFooter>
         <IonList id='secondary-menu'>
           {appSecondaryPages.map((secondaryPage, index) => {
+            if (secondaryPage.wellKnownUsersOnly && !firebaseStore.isWellKnown) {
+              return null;
+            }
             return (
               <IonMenuToggle key={index} autoHide={false}>
                 <IonItem
@@ -104,4 +126,4 @@ const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
   );
 };
 
-export default withRouter(Menu);
+export default observer(withRouter(Menu));
