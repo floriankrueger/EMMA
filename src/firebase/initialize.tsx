@@ -15,4 +15,15 @@ export function initialize() {
 
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
+
+  let app = firebase.app();
+  let features = [
+    { feature: app.auth, name: 'auth' },
+    { feature: app.database, name: 'database' },
+    { feature: app.messaging, name: 'messaging' },
+    { feature: app.storage, name: 'storage' }
+  ]
+    .filter(feature => typeof feature.feature === 'function')
+    .map(feature => feature.name);
+  console.log(`Firebase SDK loaded with ${features.join(', ')}`);
 }
