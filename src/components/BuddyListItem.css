@@ -1,0 +1,16 @@
+.buddy-card {
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buddy-card h1 {
+  font-size: 1.25rem;
+  margin-top: 10px;
+  margin-bottom: 0.25rem;
+}
+
+.buddy-card .small {
+  margin-top: 0;
+}

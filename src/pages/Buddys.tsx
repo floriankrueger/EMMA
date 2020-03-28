@@ -2,6 +2,8 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar }
 import React from 'react';
 import './Buddys.css';
 import PageHeader from '../components/PageHeader';
+import PageContent from '../components/PageContent';
+import BuddyList from '../components/BuddyList';
 
 const Buddys: React.FC = () => {
   return (
@@ -16,6 +18,9 @@ const Buddys: React.FC = () => {
 
       <IonContent>
         <PageHeader assetName='buddys' title='EMMA:Buddys' copy='Klicke einen EMMA:Buddy an, um mehr zu erfahren oder einen Chat zu starten.' />
+        <PageContent>
+          <BuddyList />
+        </PageContent>
       </IonContent>
     </IonPage>
   );

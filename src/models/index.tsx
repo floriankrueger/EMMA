@@ -6,3 +6,4 @@ export * from './institution';
 export * from './institution-location';
 export * from './business-hours';
 export * from './user';
+export * from './buddy';

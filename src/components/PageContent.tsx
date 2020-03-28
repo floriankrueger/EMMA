@@ -4,7 +4,7 @@ import { IonGrid, IonRow, IonCol } from '@ionic/react';
 
 const PageContent: React.FC = ({ children }) => {
   return (
-    <IonGrid id='page-header'>
+    <IonGrid id='page-content'>
       <IonRow>
         <IonCol size-xs='0' size-md='2'></IonCol>
         <IonCol>{children}</IonCol>
