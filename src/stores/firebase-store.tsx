@@ -93,6 +93,10 @@ export class FirebaseStore {
     return this.buddys.find(buddy => buddy.bid === bid);
   }
 
+  chat(cid: string): TChat | undefined {
+    return this.chats.find(chat => chat.cid === cid);
+  }
+
   @computed
   get isLoggedIn(): boolean {
     if (this.user) {

@@ -11,6 +11,7 @@ import Aktuelles from './pages/Aktuelles';
 import Buddys from './pages/Buddys';
 import Buddy from './pages/Buddy';
 import Chats from './pages/Chats';
+import Chat from './pages/Chat';
 import Karte from './pages/Karte';
 import FAQ from './pages/FAQ';
 import Anmeldung from './pages/Anmeldung';
@@ -71,6 +72,13 @@ const App = observer(() => {
               path='/chats'
               render={props => {
                 return <Chats />;
+              }}
+              exact={true}
+            />
+            <Route
+              path='/chats/:cid'
+              render={props => {
+                return <Chat />;
               }}
               exact={true}
             />

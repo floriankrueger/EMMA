@@ -14,14 +14,10 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ chatWithBuddy }) => {
   const buddy = chatWithBuddy.buddy;
   const src = useStorageDownloadUrl(`buddys/${buddy.bid}/${buddy.avatarReference}`);
 
-  const pushDetails = () => {
-    history.push(`/chats/${chatWithBuddy.cid}`);
-  };
-
   return (
     <IonItem routerLink={`/chats/${chatWithBuddy.cid}`}>
       <IonAvatar slot='start'>
-        <img src={src} />
+        <img src={src} alt={`Benutzeravatar von ${buddy.givenName} ${buddy.familyName}`} />
       </IonAvatar>
       <IonLabel>
         <h2>{buddy.givenName}</h2>
