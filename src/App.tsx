@@ -9,6 +9,7 @@ import { useStores, useAuthState } from './hooks';
 import Menu from './components/Menu';
 import Aktuelles from './pages/Aktuelles';
 import Buddys from './pages/Buddys';
+import Buddy from './pages/Buddy';
 import Chats from './pages/Chats';
 import Karte from './pages/Karte';
 import FAQ from './pages/FAQ';
@@ -54,6 +55,13 @@ const App = observer(() => {
               path='/buddys'
               render={props => {
                 return <Buddys />;
+              }}
+              exact={true}
+            />
+            <Route
+              path='/buddys/:bid'
+              render={props => {
+                return <Buddy />;
               }}
               exact={true}
             />

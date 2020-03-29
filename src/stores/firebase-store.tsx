@@ -30,6 +30,10 @@ export class FirebaseStore {
     return this.buddyAvatarUrls.get(reference) || 'assets/icon_buddys.svg';
   }
 
+  buddy(bid: string): TBuddy | undefined {
+    return this.buddys.find(buddy => buddy.bid === bid);
+  }
+
   @computed
   get isLoggedIn(): boolean {
     if (this.user) {
