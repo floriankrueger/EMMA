@@ -2,6 +2,7 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar }
 import React from 'react';
 import './Chats.css';
 import PageHeader from '../components/PageHeader';
+import ChatList from '../components/ChatList';
 
 const Chats: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const Chats: React.FC = () => {
 
       <IonContent>
         <PageHeader assetName='chats' title='Chats' />
+        <ChatList />
       </IonContent>
     </IonPage>
   );

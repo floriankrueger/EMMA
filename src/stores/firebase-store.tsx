@@ -1,5 +1,5 @@
 import { action, observable, computed } from 'mobx';
-import { TUser, TBuddy, TChat } from '../models';
+import { TUser, TBuddy, TChat, TChatWithBuddy } from '../models';
 
 export class FirebaseStore {
   @observable
@@ -115,6 +115,23 @@ export class FirebaseStore {
   @computed
   get isWellKnown(): boolean {
     return (this.user && !this.user.isAnonymous) || false;
+  }
+
+  @computed
+  get chatsWithBuddys(): TChatWithBuddy[] {
+    var result: TChatWithBuddy[] = [];
+    this.chats.forEach(chat => {
+      const buddy = this.buddy(chat.bid);
+      if (buddy) {
+        const chatWithBuddy: TChatWithBuddy = {
+          cid: chat.cid,
+          uid: chat.uid,
+          buddy
+        };
+        result.push(chatWithBuddy);
+      }
+    });
+    return result;
   }
 }
 
