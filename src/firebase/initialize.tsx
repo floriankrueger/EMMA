@@ -1,7 +1,7 @@
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/storage';
-// import "firebase/firestore";
+import 'firebase/firestore';
 
 export function initialize() {
   const firebaseConfig = {
@@ -20,6 +20,7 @@ export function initialize() {
   let app = firebase.app();
   let features = [
     { feature: app.auth, name: 'auth' },
+    { feature: app.firestore, name: 'firestore' },
     { feature: app.database, name: 'database' },
     { feature: app.messaging, name: 'messaging' },
     { feature: app.storage, name: 'storage' }

@@ -4,7 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
-import { useStores, useAuthState } from './hooks';
+import { useStores, useAuthState, useBuddyUpdate } from './hooks';
 
 import Menu from './components/Menu';
 import Aktuelles from './pages/Aktuelles';
@@ -38,6 +38,7 @@ import './theme/variables.css';
 const App = observer(() => {
   const { firebaseStore } = useStores();
   useAuthState(firebaseStore);
+  useBuddyUpdate(firebaseStore);
   return (
     <IonApp>
       <IonReactRouter>

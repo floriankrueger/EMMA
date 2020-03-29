@@ -17,7 +17,7 @@ const BuddyListItem: React.FC<BuddyListItemProps> = ({ buddy }) => {
 
   return (
     <div className='buddy-card' onClick={pushDetails}>
-      <FirebaseStorageImage reference={buddy.avatarReference} alt={`Benutzeravatar von ${buddy.givenName} ${buddy.familyName}`} />
+      <FirebaseStorageImage reference={`buddys/${buddy.bid}/${buddy.avatarReference}`} alt={`Benutzeravatar von ${buddy.givenName} ${buddy.familyName}`} />
       <h1>{buddy.givenName}</h1>
       <small>{buddy.occupation}</small>
     </div>
