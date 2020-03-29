@@ -8,9 +8,8 @@ export function useBuddyUpdate(firebaseStore: FirebaseStore) {
 
   // subscribe to buddy updates
   useEffect(() => {
-    if (!isLoggedIn) {
-      return;
+    if (isLoggedIn) {
+      return startObserveBuddys(firebaseStore);
     }
-    return startObserveBuddys(firebaseStore);
   }, [firebaseStore, isLoggedIn]);
 }

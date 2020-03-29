@@ -1,5 +1,5 @@
 import { action, observable, computed } from 'mobx';
-import { TUser, TBuddy } from '../models';
+import { TUser, TBuddy, TChat } from '../models';
 
 export class FirebaseStore {
   @observable
@@ -11,13 +11,20 @@ export class FirebaseStore {
   @observable
   buddyAvatarUrls: Map<string, string> = new Map();
 
+  @observable
+  chats: TChat[] = [];
+
   @action
   userSignedIn(user: TUser) {
+    this.buddys = [];
+    this.chats = [];
     this.user = user;
   }
 
   @action
   userSignedOut() {
+    this.buddys = [];
+    this.chats = [];
     this.user = null;
   }
 
@@ -27,8 +34,55 @@ export class FirebaseStore {
   }
 
   @action
-  setBuddys(buddys: TBuddy[]) {
-    this.buddys = buddys;
+  addBuddy(buddy: TBuddy) {
+    console.log(`buddy added ${buddy.bid}`);
+    this.buddys.push(buddy);
+  }
+
+  @action
+  updateBuddy(buddy: TBuddy) {
+    console.log(`buddy updated ${buddy.bid}`);
+    const index = this.buddys.findIndex(existingBuddy => existingBuddy.bid === buddy.bid);
+    if (index) {
+      this.buddys.splice(index, 1, buddy);
+    } else {
+      this.buddys.push(buddy);
+    }
+  }
+
+  @action
+  deleteBuddy(buddy: TBuddy) {
+    console.log(`buddy deleted ${buddy.bid}`);
+    const index = this.buddys.findIndex(existingBuddy => existingBuddy.bid === buddy.bid);
+    if (index) {
+      this.buddys.splice(index, 1);
+    }
+  }
+
+  @action
+  addChat(chat: TChat) {
+    console.log(`chat added ${chat.cid}`);
+    this.chats.push(chat);
+  }
+
+  @action
+  updateChat(chat: TChat) {
+    console.log(`chat updated ${chat.cid}`);
+    const index = this.chats.findIndex(existingChat => existingChat.cid === chat.cid);
+    if (index) {
+      this.chats.splice(index, 1, chat);
+    } else {
+      this.chats.push(chat);
+    }
+  }
+
+  @action
+  deleteChat(chat: TChat) {
+    console.log(`chat deleted ${chat.cid}`);
+    const index = this.chats.findIndex(existingChat => existingChat.cid === chat.cid);
+    if (index) {
+      this.chats.splice(index, 1);
+    }
   }
 
   buddyAvatarUrl(reference: string): string {
@@ -67,56 +121,6 @@ export class FirebaseStore {
 // // Dummy Data
 
 // const dummyBuddys = [
-//   {
-//     bid: 'Ng6ZWyIqJu8l9CSXrLZW',
-//     givenName: 'Marion',
-//     familyName: 'Mustermann',
-//     avatarReference: '/buddys/Ng6ZWyIqJu8l9CSXrLZW/lutz_paula.png',
-//     email: 'mustermann@gesamtschule-musterstadt.de',
-//     occupation: 'Schulsozialarbeiterin',
-//     institution: 'Gesamtschule Musterstadt',
-//     businessHours: [
-//       {
-//         days: ['MON', 'TUE', 'WED'],
-//         from: '09:00h',
-//         to: '16:00h'
-//       },
-//       {
-//         days: ['THU'],
-//         from: '12:00h',
-//         to: '18:00h'
-//       },
-//       {
-//         days: ['FRI'],
-//         from: '09:00h',
-//         to: '14:00h'
-//       }
-//     ],
-//     languages: ['Deutsch', 'Englisch'],
-//     focus: ['Schulsozialarbeit'],
-//     qualifications: ['Sozialarbeiterin', 'systemische Beraterin', '20+ Jahre Berufserfahrung'],
-//     bio: 'In meiner Freizeit bin ich gern draußen in der Natur. Mein Hund Bello ist immer mit dabei!'
-//   },
-//   {
-//     bid: 'fatma-yildiz',
-//     givenName: 'Fatma',
-//     familyName: 'Yildiz',
-//     avatarReference: '/buddys/fatma-yildiz/buddy-2.png',
-//     email: 'yildiz@stadttreff.de',
-//     occupation: 'Sozialarbeiterin',
-//     institution: 'Jugendzentrum Kirchdorf',
-//     businessHours: [
-//       {
-//         days: ['MON', 'TUE', 'WED', 'THU', 'FRI'],
-//         from: '14:00h',
-//         to: '20:00h'
-//       }
-//     ],
-//     languages: ['Deutsch', 'Türkisch', 'Arabisch'],
-//     focus: ['Jugendbildung', 'Erziehung'],
-//     qualifications: ['Systemische Beraterausbildung'],
-//     bio: 'Ich liebe die Berge! Besonders die Motorradstrecken haben es mir angetan, auf denen ich mit meiner Honda fahren kann.'
-//   },
 //   {
 //     bid: 'christian-mueller',
 //     givenName: 'Christian',
