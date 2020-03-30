@@ -1,9 +1,8 @@
 import { TMessage } from './message';
-import { TGroupedMessage, makeFirst, makeMiddle } from './grouped-message';
 
 export interface TMessageGroup {
   sender: string;
-  messages: TGroupedMessage[];
+  messages: TMessage[];
 }
 
 // Append
@@ -11,37 +10,25 @@ export interface TMessageGroup {
 export function appendToMessageGroups(message: TMessage, toGroups: TMessageGroup[]): TMessageGroup[] {
   var lastGroup = toGroups.length >= 1 ? toGroups[toGroups.length - 1] : undefined;
   if (lastGroup && lastGroup.sender === message.sender) {
-    return toGroups.slice(-1).concat(appendToMessageGroup(message, lastGroup));
+    return toGroups.map((group, index) => {
+      if (index === toGroups.length - 1) {
+        return appendToMessageGroup(message, lastGroup!);
+      } else {
+        return group;
+      }
+    });
   }
   return toGroups.concat({
     sender: message.sender,
-    messages: [
-      {
-        message,
-        style: 'only'
-      }
-    ]
+    messages: [message]
   });
 }
 
 export function appendToMessageGroup(message: TMessage, group: TMessageGroup): TMessageGroup {
-  const newLastGroup: TMessageGroup = {
-    messages: group.messages.map((groupedMessage, index) => {
-      if (index === 0) {
-        return makeFirst(groupedMessage);
-      } else {
-        return makeMiddle(groupedMessage);
-      }
-    }),
-    ...group
+  return {
+    sender: group.sender,
+    messages: group.messages.concat([message])
   };
-
-  newLastGroup.messages.push({
-    message,
-    style: 'last'
-  });
-
-  return newLastGroup;
 }
 
 // Update
@@ -53,7 +40,7 @@ export function updateInMessageGroups(message: TMessage, groups: TMessageGroup[]
 export function updateInMessageGroup(message: TMessage, group: TMessageGroup): TMessageGroup {
   return {
     messages: group.messages.map(groupedMessage => {
-      if (groupedMessage.message.mid === message.mid) {
+      if (groupedMessage.mid === message.mid) {
         return {
           message,
           ...groupedMessage
@@ -73,30 +60,13 @@ export function removeFromMessageGroups(message: TMessage, groups: TMessageGroup
 }
 
 export function removeFromMessageGroup(message: TMessage, group: TMessageGroup): TMessageGroup {
-  const index = group.messages.findIndex(existingMessage => existingMessage.message.mid === message.mid);
+  const index = group.messages.findIndex(existingMessage => existingMessage.mid === message.mid);
   if (index >= 0) {
-    const filteredMessages = group.messages.filter(groupedMessage => groupedMessage.message.mid === message.mid);
+    const filteredMessages = group.messages.filter(groupedMessage => groupedMessage.mid === message.mid);
     return {
-      messages: filteredMessages.map((groupedMessage, index) => {
-        if (index === 0) {
-          return {
-            style: filteredMessages.length === 1 ? 'only' : 'first',
-            ...groupedMessage
-          } as TGroupedMessage;
-        }
-        if (index === filteredMessages.length - 1) {
-          return {
-            style: 'last',
-            ...groupedMessage
-          } as TGroupedMessage;
-        }
-        return {
-          style: 'middle',
-          ...groupedMessage
-        } as TGroupedMessage;
-      }),
+      messages: filteredMessages,
       ...group
-    } as TMessageGroup;
+    };
   }
   return group;
 }

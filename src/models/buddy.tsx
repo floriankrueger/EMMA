@@ -6,7 +6,6 @@ export interface TBuddy {
   givenName: string;
   familyName: string;
   avatarReference: string;
-  email: string;
   occupation: string;
   institution: string;
   businessHours: TBusinessHours[];
@@ -22,7 +21,6 @@ export const BuddyConverter = {
       givenName: buddy.givenName,
       familyName: buddy.familyName,
       avatar: buddy.avatarReference,
-      email: buddy.email,
       occupation: buddy.occupation,
       institution: buddy.institution,
       businessHours: [],
@@ -39,7 +37,6 @@ export const BuddyConverter = {
       givenName: data.givenName,
       familyName: data.familyName,
       avatarReference: data.avatar,
-      email: data.email,
       occupation: data.occupation,
       institution: data.institution,
       businessHours: [],

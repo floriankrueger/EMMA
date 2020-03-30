@@ -1,7 +1,7 @@
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 import { FirebaseStore } from '../stores';
-import { BuddyConverter, ChatConverter } from '../models';
+import { BuddyConverter, ChatConverter, TChat } from '../models';
 
 export function startObserveBuddys(firebaseStore: FirebaseStore): () => void {
   return firebase
@@ -45,4 +45,28 @@ export function startObserveChats(firebaseStore: FirebaseStore): () => void {
       }
     });
   });
+}
+
+export function createChat(uid: string, bid: string) {
+  return firebase
+    .firestore()
+    .collection('chats')
+    .withConverter(ChatConverter)
+    .add({
+      cid: '',
+      uid,
+      bid,
+      isArchived: false
+    } as TChat);
+}
+
+export function sendMessage(uid: string, cid: string, message: string) {
+  return firebase
+    .firestore()
+    .collection(`chats/${cid}/messages`)
+    .add({
+      sender: uid,
+      body: message,
+      date: firebase.firestore.FieldValue.serverTimestamp()
+    });
 }

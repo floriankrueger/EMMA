@@ -13,6 +13,7 @@ export function useMessageGroups(isLoggedIn: boolean, cid: string) {
     return firebase
       .firestore()
       .collection(`chats/${cid}/messages`)
+      .orderBy('date')
       .withConverter(MessageConverter)
       .onSnapshot(snapshot => {
         snapshot.docChanges().forEach(change => {
