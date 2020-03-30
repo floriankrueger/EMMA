@@ -35,15 +35,15 @@ export class FirebaseStore {
 
   @action
   addBuddy(buddy: TBuddy) {
-    console.log(`buddy added ${buddy.bid}`);
+    console.log('buddy added', buddy.bid);
     this.buddys.push(buddy);
   }
 
   @action
   updateBuddy(buddy: TBuddy) {
-    console.log(`buddy updated ${buddy.bid}`);
+    console.log('buddy updated', buddy.bid);
     const index = this.buddys.findIndex(existingBuddy => existingBuddy.bid === buddy.bid);
-    if (index) {
+    if (index >= 0) {
       this.buddys.splice(index, 1, buddy);
     } else {
       this.buddys.push(buddy);
@@ -52,35 +52,37 @@ export class FirebaseStore {
 
   @action
   deleteBuddy(buddy: TBuddy) {
-    console.log(`buddy deleted ${buddy.bid}`);
+    console.log('buddy deleted', buddy.bid);
     const index = this.buddys.findIndex(existingBuddy => existingBuddy.bid === buddy.bid);
-    if (index) {
+    if (index >= 0) {
       this.buddys.splice(index, 1);
     }
   }
 
   @action
   addChat(chat: TChat) {
-    console.log(`chat added ${chat.cid}`);
+    console.log('chat added', chat.cid);
     this.chats.push(chat);
   }
 
   @action
   updateChat(chat: TChat) {
-    console.log(`chat updated ${chat.cid}`);
+    console.log('chat updated', chat.cid);
+    console.log('before', this.chats.length);
     const index = this.chats.findIndex(existingChat => existingChat.cid === chat.cid);
-    if (index) {
+    if (index >= 0) {
       this.chats.splice(index, 1, chat);
     } else {
       this.chats.push(chat);
     }
+    console.log('after', this.chats.length);
   }
 
   @action
   deleteChat(chat: TChat) {
-    console.log(`chat deleted ${chat.cid}`);
+    console.log('chat deleted', chat.cid);
     const index = this.chats.findIndex(existingChat => existingChat.cid === chat.cid);
-    if (index) {
+    if (index >= 0) {
       this.chats.splice(index, 1);
     }
   }

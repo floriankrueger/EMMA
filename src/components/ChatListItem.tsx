@@ -1,7 +1,6 @@
 import React from 'react';
 import { IonItem, IonLabel, IonAvatar } from '@ionic/react';
 import { TChatWithBuddy } from '../models';
-import { useHistory } from 'react-router-dom';
 import { useStorageDownloadUrl } from '../hooks';
 import './ChatListItem.css';
 
@@ -10,7 +9,6 @@ interface ChatListItemProps {
 }
 
 const ChatListItem: React.FC<ChatListItemProps> = ({ chatWithBuddy }) => {
-  const history = useHistory();
   const buddy = chatWithBuddy.buddy;
   const src = useStorageDownloadUrl(`buddys/${buddy.bid}/${buddy.avatarReference}`);
 

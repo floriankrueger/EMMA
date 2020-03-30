@@ -24,21 +24,25 @@ export function startObserveBuddys(firebaseStore: FirebaseStore): () => void {
 }
 
 export function startObserveChats(firebaseStore: FirebaseStore): () => void {
-  return firebase
-    .firestore()
-    .collection('chats')
-    .withConverter(ChatConverter)
-    .onSnapshot(snapshot => {
-      snapshot.docChanges().forEach(change => {
-        if (change.type === 'added') {
-          firebaseStore.addChat(change.doc.data());
-        }
-        if (change.type === 'modified') {
-          firebaseStore.updateChat(change.doc.data());
-        }
-        if (change.type === 'removed') {
-          firebaseStore.deleteChat(change.doc.data());
-        }
-      });
+  const reference = firebase.firestore().collection('chats');
+  let uid = firebaseStore.user?.uid;
+  var query: firebase.firestore.Query;
+  if (uid && firebaseStore.isWellKnown) {
+    query = reference.where('bid', '==', uid);
+  } else {
+    query = reference.where('uid', '==', uid);
+  }
+  return query.withConverter(ChatConverter).onSnapshot(snapshot => {
+    snapshot.docChanges().forEach(change => {
+      if (change.type === 'added') {
+        firebaseStore.addChat(change.doc.data());
+      }
+      if (change.type === 'modified') {
+        firebaseStore.updateChat(change.doc.data());
+      }
+      if (change.type === 'removed') {
+        firebaseStore.deleteChat(change.doc.data());
+      }
     });
+  });
 }
