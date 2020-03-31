@@ -8,6 +8,5 @@ export * from './business-hours';
 export * from './user';
 export * from './buddy';
 export * from './chat';
-export * from './chat-with-buddy';
 export * from './message';
 export * from './message-group';

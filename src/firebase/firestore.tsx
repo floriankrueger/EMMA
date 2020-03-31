@@ -20,6 +20,7 @@ export function startObserveBuddys(firebaseStore: FirebaseStore): () => void {
           firebaseStore.deleteBuddy(change.doc.data());
         }
       });
+      firebaseStore.didFetchBuddys = true;
     });
 }
 
@@ -44,6 +45,7 @@ export function startObserveChats(firebaseStore: FirebaseStore): () => void {
         firebaseStore.deleteChat(change.doc.data());
       }
     });
+    firebaseStore.didFetchChats = true;
   });
 }
 

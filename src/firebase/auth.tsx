@@ -28,20 +28,11 @@ export function signOut(callback: (success: boolean) => void) {
     });
 }
 
-export function signInWithEmailAndPassword(email: string, password: string, rememberMe: boolean, callback: (success: boolean) => void) {
-  firebase
+export function signInWithEmailAndPassword(email: string, password: string, rememberMe: boolean): Promise<firebase.auth.UserCredential> {
+  return firebase
     .auth()
     .setPersistence(rememberMe ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION)
-    .then(() => {
-      firebase.auth().signInWithEmailAndPassword(email, password);
-    })
-    .then(() => {
-      callback(true);
-    })
-    .catch(function(error) {
-      console.error(error.message, error.code);
-      callback(false);
-    });
+    .then(() => firebase.auth().signInWithEmailAndPassword(email, password));
 }
 
 export function onAuthStateChanged(callback: (user: TUser | null) => void): firebase.Unsubscribe {

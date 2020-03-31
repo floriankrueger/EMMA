@@ -10,11 +10,22 @@ const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const login = () => {
-    signInWithEmailAndPassword(email, password, rememberMe, success => {
-      history.push('/chats');
-    });
+    setLoginError(null);
+    signInWithEmailAndPassword(email, password, rememberMe)
+      .then(() => history.push('/chats'))
+      .catch(error => {
+        switch (error.code) {
+          case 'auth/user-not-found':
+          case 'auth/wrong-password':
+            setLoginError('Der angegebene Benutzer existiert nicht oder das Passwort ist falsch.');
+            break;
+          default:
+            setLoginError('Anmeldung fehlgeschlagen.');
+        }
+      });
   };
 
   return (
@@ -25,6 +36,11 @@ const LoginForm: React.FC = () => {
           <IonNote>Wenn du als Berater bei EMMA Buddy registriert bist, kannst du dich hier anmelden.</IonNote>
         </IonCol>
       </IonRow>
+      {loginError ? (
+        <IonRow>
+          <p className='callout callout-error'>{loginError}</p>
+        </IonRow>
+      ) : null}
       <IonRow>
         <IonCol>
           <IonList>

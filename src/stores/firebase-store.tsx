@@ -1,5 +1,5 @@
 import { action, observable, computed } from 'mobx';
-import { TUser, TBuddy, TChat, TChatWithBuddy } from '../models';
+import { TUser, TBuddy, TChat } from '../models';
 
 export class FirebaseStore {
   @observable
@@ -9,22 +9,32 @@ export class FirebaseStore {
   buddys: TBuddy[] = [];
 
   @observable
+  didFetchBuddys: boolean = false;
+
+  @observable
   buddyAvatarUrls: Map<string, string> = new Map();
 
   @observable
   chats: TChat[] = [];
 
+  @observable
+  didFetchChats: boolean = false;
+
   @action
   userSignedIn(user: TUser) {
     this.buddys = [];
+    this.didFetchBuddys = false;
     this.chats = [];
+    this.didFetchChats = false;
     this.user = user;
   }
 
   @action
   userSignedOut() {
     this.buddys = [];
+    this.didFetchBuddys = false;
     this.chats = [];
+    this.didFetchChats = false;
     this.user = null;
   }
 
@@ -35,56 +45,44 @@ export class FirebaseStore {
 
   @action
   addBuddy(buddy: TBuddy) {
-    console.log('buddy added', buddy.bid);
-    this.buddys.push(buddy);
+    this.buddys = this.buddys.concat(buddy);
   }
 
   @action
   updateBuddy(buddy: TBuddy) {
-    console.log('buddy updated', buddy.bid);
-    const index = this.buddys.findIndex(existingBuddy => existingBuddy.bid === buddy.bid);
-    if (index >= 0) {
-      this.buddys.splice(index, 1, buddy);
-    } else {
-      this.buddys.push(buddy);
-    }
+    this.buddys = this.buddys.map(existingBuddy => {
+      if (existingBuddy.bid === buddy.bid) {
+        return buddy;
+      } else {
+        return existingBuddy;
+      }
+    });
   }
 
   @action
   deleteBuddy(buddy: TBuddy) {
-    console.log('buddy deleted', buddy.bid);
-    const index = this.buddys.findIndex(existingBuddy => existingBuddy.bid === buddy.bid);
-    if (index >= 0) {
-      this.buddys.splice(index, 1);
-    }
+    this.buddys = this.buddys.filter(existingBuddy => existingBuddy.bid !== buddy.bid);
   }
 
   @action
   addChat(chat: TChat) {
-    console.log('chat added', chat.cid);
-    this.chats.push(chat);
+    this.chats = this.chats.concat(chat);
   }
 
   @action
   updateChat(chat: TChat) {
-    console.log('chat updated', chat.cid);
-    console.log('before', this.chats.length);
-    const index = this.chats.findIndex(existingChat => existingChat.cid === chat.cid);
-    if (index >= 0) {
-      this.chats.splice(index, 1, chat);
-    } else {
-      this.chats.push(chat);
-    }
-    console.log('after', this.chats.length);
+    this.chats = this.chats.map(existingChat => {
+      if (existingChat.cid === chat.cid) {
+        return chat;
+      } else {
+        return existingChat;
+      }
+    });
   }
 
   @action
   deleteChat(chat: TChat) {
-    console.log('chat deleted', chat.cid);
-    const index = this.chats.findIndex(existingChat => existingChat.cid === chat.cid);
-    if (index >= 0) {
-      this.chats.splice(index, 1);
-    }
+    this.chats = this.chats.filter(existingChat => existingChat.cid !== chat.cid);
   }
 
   buddyAvatarUrl(reference: string): string {
@@ -122,66 +120,4 @@ export class FirebaseStore {
   get isWellKnown(): boolean {
     return (this.user && !this.user.isAnonymous) || false;
   }
-
-  @computed
-  get chatsWithBuddys(): TChatWithBuddy[] {
-    var result: TChatWithBuddy[] = [];
-    this.chats.forEach(chat => {
-      const buddy = this.buddy(chat.bid);
-      if (buddy) {
-        const chatWithBuddy: TChatWithBuddy = {
-          cid: chat.cid,
-          uid: chat.uid,
-          buddy
-        };
-        result.push(chatWithBuddy);
-      }
-    });
-    return result;
-  }
 }
-
-// // Dummy Data
-
-// const dummyBuddys = [
-//   {
-//     bid: 'christian-mueller',
-//     givenName: 'Christian',
-//     familyName: 'Müller',
-//     avatarReference: '/buddys/christian-mueller/chris.png',
-//     email: 'christian.müller@supermail.de',
-//     occupation: 'Lehrer',
-//     institution: 'Gymnasium Neustadt',
-//     businessHours: [
-//       {
-//         days: ['SAT', 'SUN'],
-//         from: '09:00h',
-//         to: '16:00h'
-//       }
-//     ],
-//     languages: ['Deutsch', 'Deutsche Gebärdensprache'],
-//     focus: ['Bildung'],
-//     qualifications: ['Lehrer für Sport und Physik', 'ausgebildeter Erlebnispädagoge'],
-//     bio: 'Ich bin alleinerziehender Vater von zwei Kindern und interessiere mich für Jazz-Musik.'
-//   },
-//   {
-//     bid: 'lara-schmidt',
-//     givenName: 'Lara',
-//     familyName: 'Schmidt',
-//     avatarReference: '/buddys/lara-schmidt/ls.png',
-//     email: 'Lara.Schmidt@efb-baerstadt.fr',
-//     occupation: 'Diplom-Pädagogin, Hebamme',
-//     institution: 'Erziehungsberatungsstelle',
-//     businessHours: [
-//       {
-//         days: ['MON', 'TUE', 'WED', 'THU'],
-//         from: '08:00h',
-//         to: '14:00h'
-//       }
-//     ],
-//     languages: ['Deutsch', 'Französisch'],
-//     focus: ['Erziehung', 'Frühe Hilfen', 'Alltagstipps in der Krise'],
-//     qualifications: ['Anleiterin für Babymassagen'],
-//     bio: 'Ich spiele in meiner Freizeit Schlagzeug und gehe gerne auf Konzerte.'
-//   }
-// ] as TBuddy[];
