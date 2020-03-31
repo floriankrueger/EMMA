@@ -8,14 +8,14 @@ import './ChatList.css';
 
 const ChatList = observer(() => {
   let { firebaseStore } = useStores();
-  console.log('Render ChatList', firebaseStore.chats.length);
+  let uid = firebaseStore.user?.uid;
   return (
     <PageContent>
       <IonList>
-        {firebaseStore.chats.map((chat, index) => {
+        {firebaseStore.chats.map(chat => {
           const buddy = firebaseStore.buddy(chat.bid);
-          if (buddy) {
-            return <ChatListItem key={index} chat={chat} buddy={buddy} />;
+          if (uid && buddy) {
+            return <ChatListItem key={chat.cid} chat={chat} buddy={buddy} userIsBuddy={buddy.bid === uid} />;
           } else {
             return null;
           }

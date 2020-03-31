@@ -8,8 +8,8 @@ const BuddyList = observer(() => {
   let { firebaseStore } = useStores();
   return (
     <div id='buddy-list'>
-      {firebaseStore.buddys.map((buddy, index) => {
-        return <BuddyListItem key={index} buddy={buddy} />;
+      {firebaseStore.buddys.map(buddy => {
+        return <BuddyListItem key={buddy.bid} buddy={buddy} />;
       })}
     </div>
   );
