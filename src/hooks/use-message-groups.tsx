@@ -19,15 +19,12 @@ export function useMessageGroups(isLoggedIn: boolean, cid: string) {
         snapshot.docChanges().forEach(change => {
           const message = change.doc.data();
           if (change.type === 'added') {
-            console.log('message added', cid, message.mid);
             setMessageGroups(messageGroups => appendToMessageGroups(message, messageGroups));
           }
           if (change.type === 'modified') {
-            console.log('message modified', cid, message.mid);
             setMessageGroups(messageGroups => updateInMessageGroups(message, messageGroups));
           }
           if (change.type === 'removed') {
-            console.log('message removed', cid, message.mid);
             setMessageGroups(messageGroups => removeFromMessageGroups(message, messageGroups));
           }
         });

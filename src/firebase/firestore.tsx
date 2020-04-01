@@ -55,20 +55,36 @@ export function createChat(uid: string, bid: string) {
     .collection('chats')
     .withConverter(ChatConverter)
     .add({
-      cid: '',
+      cid: '', // this is actuall not used when sent to the backend
       uid,
       bid,
-      isArchived: false
+      started: new Date(),
+      ended: null,
+      isArchived: false,
+      lastMessage: null
     } as TChat);
 }
 
 export function sendMessage(uid: string, cid: string, message: string) {
-  return firebase
-    .firestore()
-    .collection(`chats/${cid}/messages`)
-    .add({
+  const db = firebase.firestore();
+
+  var batch = db.batch();
+
+  const chatRef = db.collection(`chats`).doc(cid);
+  batch.update(chatRef, {
+    lastMessage: {
       sender: uid,
       body: message,
       date: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    }
+  });
+
+  const messageRef = db.collection(`chats/${cid}/messages`).doc();
+  batch.set(messageRef, {
+    sender: uid,
+    body: message,
+    date: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  return batch.commit();
 }

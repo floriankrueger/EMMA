@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'moment/locale/de';
 import App from './App';
 import { initialize as initFirebase } from './firebase';
 import * as serviceWorker from './serviceWorker';
