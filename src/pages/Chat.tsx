@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ellipsisHorizontal, ellipsisVertical, handLeft } from 'ionicons/icons';
+import React, { useState, useEffect, useRef } from 'react';
+import { ellipsisHorizontal, ellipsisVertical } from 'ionicons/icons';
 import {
   IonButtons,
   IonContent,
@@ -35,13 +35,6 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
   const buddy = firebaseStore.buddy(chat?.bid || '');
   const userIsBuddy = chat && chat.bid === uid;
 
-  useEffect(() => {
-    const objDiv = document.getElementById('message-list');
-    if (objDiv) {
-      objDiv.scrollTop = objDiv.scrollHeight;
-    }
-  });
-
   const keyPressed = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       send();
@@ -70,6 +63,15 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
   const closeChat = () => {
     console.log('close chat');
   };
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    const currentRef = messagesEndRef.current;
+    if (currentRef) {
+      currentRef.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  useEffect(scrollToBottom, [messageGroups]);
 
   return (
     <IonPage>
@@ -100,6 +102,7 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
           {messageGroups.map((group, index) => {
             return <MessageGroup key={index} messageGroup={group} currentUserId={uid} />;
           })}
+          <div ref={messagesEndRef} />
         </div>
       </IonContent>
       <IonFooter id='message-input'>
