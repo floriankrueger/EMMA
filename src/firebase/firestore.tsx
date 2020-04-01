@@ -70,7 +70,7 @@ export function sendMessage(uid: string, cid: string, message: string) {
 
   var batch = db.batch();
 
-  const chatRef = db.collection(`chats`).doc(cid);
+  const chatRef = db.collection('chats').doc(cid);
   batch.update(chatRef, {
     lastMessage: {
       sender: uid,
@@ -87,4 +87,15 @@ export function sendMessage(uid: string, cid: string, message: string) {
   });
 
   return batch.commit();
+}
+
+export function archiveChat(cid: string) {
+  return firebase
+    .firestore()
+    .collection('chats')
+    .doc(cid)
+    .update({
+      isArchived: true,
+      ended: firebase.firestore.FieldValue.serverTimestamp()
+    });
 }

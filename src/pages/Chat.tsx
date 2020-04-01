@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { ellipsisHorizontal, ellipsisVertical } from 'ionicons/icons';
 import {
   IonButtons,
@@ -9,20 +9,20 @@ import {
   IonPage,
   IonIcon,
   IonToolbar,
-  IonFooter,
-  IonInput,
   IonButton,
   IonPopover,
   IonList,
   IonItem,
-  IonLabel
+  IonLabel,
+  IonRouterLink
 } from '@ionic/react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter, useHistory } from 'react-router-dom';
 import './Chat.css';
 import { useStores, useMessageGroups } from '../hooks';
-import { sendMessage } from '../firebase';
-import MessageGroup from '../components/MessageGroup';
-import { observer } from 'mobx-react';
+import { archiveChat } from '../firebase';
+import ChatOutput from '../components/ChatOutput';
+import ChatInput from '../components/ChatInput';
+import EmptyStateContainer from '../components/EmptyStateContainer';
 
 interface ChatProps extends RouteComponentProps<{ cid: string }> {}
 
@@ -30,25 +30,10 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
   const { firebaseStore } = useStores();
 
   const messageGroups = useMessageGroups(firebaseStore.isLoggedIn, match.params.cid);
-  const uid = firebaseStore.user?.uid;
+  const user = firebaseStore.user;
   const chat = firebaseStore.chat(match.params.cid);
-  const buddy = firebaseStore.buddy(chat?.bid || '');
-  const userIsBuddy = chat && chat.bid === uid;
-
-  const keyPressed = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      send();
-    }
-  };
-
-  const [message, setMessage] = useState('');
-  const send = () => {
-    let uid = firebaseStore.user?.uid;
-    if (uid) {
-      sendMessage(uid, match.params.cid, message);
-      setMessage('');
-    }
-  };
+  const buddy = chat ? firebaseStore.buddy(chat.bid) : null;
+  const userIsBuddy = chat && user && chat.bid === user.uid;
 
   const [showPopover, setShowPopover] = useState(false);
   const [popoverEvent, setShowPopoverEvent] = useState<any | undefined>(undefined);
@@ -60,57 +45,69 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
     setShowPopoverEvent(event);
   };
 
+  const history = useHistory();
   const closeChat = () => {
-    console.log('close chat');
+    archiveChat(match.params.cid)
+      .then(() => {
+        history.push('/chats');
+      })
+      .catch(error => {
+        console.error('Failed to archive chat', error);
+      });
   };
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const scrollToBottom = () => {
-    const currentRef = messagesEndRef.current;
-    if (currentRef) {
-      currentRef.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-  useEffect(scrollToBottom, [messageGroups]);
+  if (user && chat) {
+    return (
+      <IonPage>
+        <IonHeader className='ion-no-border'>
+          <IonToolbar>
+            <IonButtons slot='start'>
+              <IonMenuButton />
+            </IonButtons>
+            <IonButtons slot='primary'>
+              <IonButton color='primary' onClick={event => openPopover(event)}>
+                <IonIcon slot='icon-only' ios={ellipsisHorizontal} md={ellipsisVertical} />
+              </IonButton>
+            </IonButtons>
+            <IonTitle>{user.uid && buddy ? `Chat mit ${userIsBuddy ? `Anonymer Nutzer ${chat?.uid}` : buddy?.givenName}` : 'Chat'}</IonTitle>
+          </IonToolbar>
+        </IonHeader>
 
-  return (
-    <IonPage>
-      <IonHeader className='ion-no-border'>
-        <IonToolbar>
-          <IonButtons slot='start'>
-            <IonMenuButton />
-          </IonButtons>
-          <IonButtons slot='primary'>
-            <IonButton color='primary' onClick={event => openPopover(event)}>
-              <IonIcon slot='icon-only' ios={ellipsisHorizontal} md={ellipsisVertical} />
-            </IonButton>
-          </IonButtons>
-          <IonTitle>{uid && buddy ? `Chat mit ${userIsBuddy ? `Anonymer Nutzer ${chat?.uid}` : buddy?.givenName}` : 'Chat'}</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+        <IonPopover isOpen={showPopover} event={popoverEvent} onDidDismiss={() => setShowPopover(false)}>
+          <IonList lines='none'>
+            <IonItem button onClick={closeChat}>
+              <IonLabel color='danger'>Chat Beenden</IonLabel>
+            </IonItem>
+          </IonList>
+        </IonPopover>
 
-      <IonPopover isOpen={showPopover} event={popoverEvent} onDidDismiss={() => setShowPopover(false)}>
-        <IonList lines='none'>
-          <IonItem button onClick={closeChat}>
-            <IonLabel color='danger'>Chat Beenden</IonLabel>
-          </IonItem>
-        </IonList>
-      </IonPopover>
+        <ChatOutput chat={chat} user={user} messageGroups={messageGroups} />
+        <ChatInput chat={chat} user={user} />
+      </IonPage>
+    );
+  } else {
+    return (
+      <IonPage>
+        <IonHeader className='ion-no-border'>
+          <IonToolbar>
+            <IonButtons slot='start'>
+              <IonMenuButton />
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
 
-      <IonContent>
-        <div id='message-list'>
-          {messageGroups.map((group, index) => {
-            return <MessageGroup key={index} messageGroup={group} currentUserId={uid} />;
-          })}
-          <div ref={messagesEndRef} />
-        </div>
-      </IonContent>
-      <IonFooter id='message-input'>
-        <IonInput placeholder='Deine Nachricht' value={message} onKeyPress={e => keyPressed(e)} onIonChange={e => setMessage(e.detail.value || '')} />
-        <IonButton onClick={send}>Absenden</IonButton>
-      </IonFooter>
-    </IonPage>
-  );
+        <IonContent>
+          <EmptyStateContainer message='Fehler beim Laden des Chats.'>
+            Zurück zur{' '}
+            <IonRouterLink href='/chats' color='primary'>
+              Übersichtsseite
+            </IonRouterLink>
+            .
+          </EmptyStateContainer>
+        </IonContent>
+      </IonPage>
+    );
+  }
 };
 
-export default observer(withRouter(Chat));
+export default withRouter(Chat);

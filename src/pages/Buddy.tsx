@@ -1,8 +1,9 @@
 import React from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar, IonButton } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar, IonButton, IonRouterLink } from '@ionic/react';
 import { RouteComponentProps, withRouter, useHistory } from 'react-router-dom';
 import './Buddy.css';
 import PageContent from '../components/PageContent';
+import EmptyStateContainer from '../components/EmptyStateContainer';
 import { useStores } from '../hooks';
 import { createChat } from '../firebase';
 
@@ -44,8 +45,8 @@ const Buddy: React.FC<BuddyProps> = ({ match }) => {
       </IonHeader>
 
       <IonContent>
-        <PageContent>
-          {buddy ? (
+        {buddy ? (
+          <PageContent>
             <div>
               <div>
                 {buddy.givenName} {buddy.familyName}
@@ -56,13 +57,15 @@ const Buddy: React.FC<BuddyProps> = ({ match }) => {
                 </IonButton>
               </div>
             </div>
-          ) : (
-            <div>
-              <p>Leider konnten wir den EMMA:Buddy mit dieser ID nicht finden.</p>
-              <a href='buddys/'>Zurück zur Übersicht</a>
-            </div>
-          )}
-        </PageContent>
+          </PageContent>
+        ) : (
+          <EmptyStateContainer message='Leider konnten wir den EMMA:Buddy mit dieser ID nicht finden.'>
+            Zurück zur{' '}
+            <IonRouterLink href='/buddys' color='primary'>
+              Übersicht
+            </IonRouterLink>
+          </EmptyStateContainer>
+        )}
       </IonContent>
     </IonPage>
   );
