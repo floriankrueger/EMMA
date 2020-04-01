@@ -10,7 +10,7 @@ export function useMessageGroups(isLoggedIn: boolean, cid: string) {
     if (!isLoggedIn) {
       return;
     }
-    return firebase
+    let stop = firebase
       .firestore()
       .collection(`chats/${cid}/messages`)
       .orderBy('date')
@@ -32,6 +32,10 @@ export function useMessageGroups(isLoggedIn: boolean, cid: string) {
           }
         });
       });
+    return () => {
+      setMessageGroups([]);
+      stop();
+    };
   }, [cid, isLoggedIn]);
 
   return messageGroups;

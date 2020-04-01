@@ -1,17 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar, IonFooter, IonInput, IonButton } from '@ionic/react';
+import { ellipsisHorizontal, ellipsisVertical, handLeft } from 'ionicons/icons';
+import {
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonMenuButton,
+  IonPage,
+  IonIcon,
+  IonToolbar,
+  IonFooter,
+  IonInput,
+  IonButton,
+  IonPopover,
+  IonList,
+  IonItem,
+  IonLabel
+} from '@ionic/react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import './Chat.css';
 import { useStores, useMessageGroups } from '../hooks';
 import { sendMessage } from '../firebase';
 import MessageGroup from '../components/MessageGroup';
+import { observer } from 'mobx-react';
 
 interface ChatProps extends RouteComponentProps<{ cid: string }> {}
 
 const Chat: React.FC<ChatProps> = ({ match }) => {
   const { firebaseStore } = useStores();
+
   const messageGroups = useMessageGroups(firebaseStore.isLoggedIn, match.params.cid);
   const uid = firebaseStore.user?.uid;
+  const chat = firebaseStore.chat(match.params.cid);
+  const buddy = firebaseStore.buddy(chat?.bid || '');
+  const userIsBuddy = chat && chat.bid === uid;
 
   useEffect(() => {
     const objDiv = document.getElementById('message-list');
@@ -35,6 +57,20 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
     }
   };
 
+  const [showPopover, setShowPopover] = useState(false);
+  const [popoverEvent, setShowPopoverEvent] = useState<any | undefined>(undefined);
+
+  const openPopover = (event: any) => {
+    console.log(event);
+    event.persist();
+    setShowPopover(true);
+    setShowPopoverEvent(event);
+  };
+
+  const closeChat = () => {
+    console.log('close chat');
+  };
+
   return (
     <IonPage>
       <IonHeader className='ion-no-border'>
@@ -42,8 +78,22 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
           <IonButtons slot='start'>
             <IonMenuButton />
           </IonButtons>
+          <IonButtons slot='primary'>
+            <IonButton color='primary' onClick={event => openPopover(event)}>
+              <IonIcon slot='icon-only' ios={ellipsisHorizontal} md={ellipsisVertical} />
+            </IonButton>
+          </IonButtons>
+          <IonTitle>{uid && buddy ? `Chat mit ${userIsBuddy ? `Anonymer Nutzer ${chat?.uid}` : buddy?.givenName}` : 'Chat'}</IonTitle>
         </IonToolbar>
       </IonHeader>
+
+      <IonPopover isOpen={showPopover} event={popoverEvent} onDidDismiss={() => setShowPopover(false)}>
+        <IonList lines='none'>
+          <IonItem button onClick={closeChat}>
+            <IonLabel color='danger'>Chat Beenden</IonLabel>
+          </IonItem>
+        </IonList>
+      </IonPopover>
 
       <IonContent>
         <div id='message-list'>
@@ -60,4 +110,4 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
   );
 };
 
-export default withRouter(Chat);
+export default observer(withRouter(Chat));
