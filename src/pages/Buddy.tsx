@@ -1,11 +1,14 @@
 import React from 'react';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar, IonButton, IonRouterLink } from '@ionic/react';
 import { RouteComponentProps, withRouter, useHistory } from 'react-router-dom';
-import './Buddy.css';
+
+import { useTypedSelector } from '../store/rootReducer';
+import { createChat } from '../firebase';
+
 import PageContent from '../components/PageContent';
 import EmptyStateContainer from '../components/EmptyStateContainer';
-import { useStores } from '../hooks';
-import { createChat } from '../firebase';
+
+import './Buddy.css';
 
 interface BuddyProps
   extends RouteComponentProps<{
@@ -13,21 +16,16 @@ interface BuddyProps
   }> {}
 
 const Buddy: React.FC<BuddyProps> = ({ match }) => {
-  const { firebaseStore } = useStores();
-  const user = firebaseStore.user;
-  const buddy = firebaseStore.buddy(match.params.bid);
+  const [user, buddy] = useTypedSelector(state => [state.authentication.user, state.buddy.buddys.find(b => b.bid === match.params.bid)]);
+  const conversation = useTypedSelector(state => state.conversation.conversations.find(c => c.bid === buddy?.bid));
   const history = useHistory();
 
   const startChatting = () => {
     if (user && buddy) {
-      const chat = firebaseStore.chats.find(chat => {
-        return chat.bid === buddy.bid;
-      });
-      if (chat) {
-        history.push(`/chats/${chat.cid}`);
+      if (conversation) {
+        history.push(`/chats/${conversation.cid}`);
       } else {
         createChat(user.uid, buddy.bid).then(docRef => {
-          console.log('Chat created', docRef.id);
           history.push(`/chats/${docRef.id}`);
         });
       }

@@ -1,17 +1,18 @@
 import React from 'react';
 import { IonItem, IonLabel, IonAvatar } from '@ionic/react';
-import { TChat, TBuddy } from '../models';
+
+import { TConversation, TBuddy } from '../models';
 import { useStorageDownloadUrl } from '../hooks';
 import ChatListItemLastActionParagraph from './ChatListItemLastActionParagraph';
 import './ChatListItem.css';
 
 interface ChatListItemProps {
-  chat: TChat;
+  conversation: TConversation;
   buddy: TBuddy;
   userIsBuddy: boolean;
 }
 
-const ChatListItem: React.FC<ChatListItemProps> = ({ chat, buddy, userIsBuddy }) => {
+const ChatListItem: React.FC<ChatListItemProps> = ({ conversation, buddy, userIsBuddy }) => {
   const buddyAvatarSrc = useStorageDownloadUrl(`buddys/${buddy.bid}/${buddy.avatarReference}`);
 
   var src: string;
@@ -25,17 +26,17 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ chat, buddy, userIsBuddy })
     alt = `Benutzeravatar von ${buddy.givenName} ${buddy.familyName}`;
   }
 
-  const lastMessage = chat.lastMessage;
+  const lastMessage = conversation.lastMessage;
 
   return (
-    <IonItem routerLink={`/chats/${chat.cid}`}>
+    <IonItem routerLink={`/chats/${conversation.cid}`}>
       <IonAvatar slot='start'>
         <img src={src} alt={alt} />
       </IonAvatar>
       <IonLabel>
-        <h2>{userIsBuddy ? `Anonymer Nutzer ${chat.uid}` : buddy.givenName}</h2>
+        <h2>{userIsBuddy ? `Anonymer Nutzer ${conversation.uid}` : buddy.givenName}</h2>
         {lastMessage ? <h3>{lastMessage.body}</h3> : null}
-        <ChatListItemLastActionParagraph chat={chat} />
+        <ChatListItemLastActionParagraph conversation={conversation} />
       </IonLabel>
     </IonItem>
   );

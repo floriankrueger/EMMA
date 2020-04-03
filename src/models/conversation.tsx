@@ -1,18 +1,18 @@
 import * as firebase from 'firebase/app';
-import { TChatLastMessage } from './chat-last-message';
+import { TMessage } from './message';
 
-export interface TChat {
+export interface TConversation {
   cid: string;
   bid: string;
   uid: string;
   started: Date;
   ended: Date | null;
   isArchived: boolean;
-  lastMessage: TChatLastMessage | null;
+  lastMessage: TMessage | null;
 }
 
-export const ChatConverter = {
-  toFirestore(chat: TChat): firebase.firestore.DocumentData {
+export const ConversationConverter = {
+  toFirestore(chat: TConversation): firebase.firestore.DocumentData {
     var lm = chat.lastMessage
       ? {
           sender: chat.lastMessage.sender,
@@ -29,14 +29,14 @@ export const ChatConverter = {
       lastMessage: lm
     };
   },
-  fromFirestore(snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions): TChat {
+  fromFirestore(snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions): TConversation {
     const data = snapshot.data(options)!;
     var lm = data.lastMessage
       ? ({
           sender: data.lastMessage.sender,
           date: data.lastMessage.date ? data.lastMessage.date.toDate() : null,
           body: data.lastMessage.body
-        } as TChatLastMessage)
+        } as TMessage)
       : null;
     return {
       cid: snapshot.id,
@@ -46,6 +46,6 @@ export const ChatConverter = {
       ended: data.ended ? data.ended.toDate() : null,
       isArchived: data.isArchived || false,
       lastMessage: lm
-    } as TChat;
+    } as TConversation;
   }
 };

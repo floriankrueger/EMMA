@@ -18,7 +18,9 @@ import {
 } from '@ionic/react';
 import { RouteComponentProps, withRouter, useHistory } from 'react-router-dom';
 import './Chat.css';
-import { useStores, useMessageGroups } from '../hooks';
+import { useMessageGroups } from '../hooks';
+import { useTypedSelector } from '../store/rootReducer';
+import { findConversation } from '../store/conversation/reducers';
 import { archiveChat } from '../firebase';
 import ChatOutput from '../components/ChatOutput';
 import ChatInput from '../components/ChatInput';
@@ -27,13 +29,15 @@ import EmptyStateContainer from '../components/EmptyStateContainer';
 interface ChatProps extends RouteComponentProps<{ cid: string }> {}
 
 const Chat: React.FC<ChatProps> = ({ match }) => {
-  const { firebaseStore } = useStores();
+  const [isLoggedIn, user, conversation] = useTypedSelector(state => [
+    state.authentication.isLoggedIn,
+    state.authentication.user,
+    findConversation(state.conversation, match.params.cid)
+  ]);
+  const [buddy] = useTypedSelector(state => [state.buddy.buddys.find(b => b.bid === conversation?.bid)]);
 
-  const messageGroups = useMessageGroups(firebaseStore.isLoggedIn, match.params.cid);
-  const user = firebaseStore.user;
-  const chat = firebaseStore.chat(match.params.cid);
-  const buddy = chat ? firebaseStore.buddy(chat.bid) : null;
-  const userIsBuddy = chat && user && chat.bid === user.uid;
+  const messageGroups = useMessageGroups(isLoggedIn, match.params.cid);
+  const userIsBuddy = conversation && user && conversation.bid === user.uid;
 
   const [showPopover, setShowPopover] = useState(false);
   const [popoverEvent, setShowPopoverEvent] = useState<any | undefined>(undefined);
@@ -56,7 +60,7 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
       });
   };
 
-  if (user && chat) {
+  if (user && conversation) {
     return (
       <IonPage>
         <IonHeader className='ion-no-border'>
@@ -69,7 +73,7 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
                 <IonIcon slot='icon-only' ios={ellipsisHorizontal} md={ellipsisVertical} />
               </IonButton>
             </IonButtons>
-            <IonTitle>{user.uid && buddy ? `Chat mit ${userIsBuddy ? `Anonymer Nutzer ${chat?.uid}` : buddy?.givenName}` : 'Chat'}</IonTitle>
+            <IonTitle>{user.uid && buddy ? `Chat mit ${userIsBuddy ? `Anonymer Nutzer ${conversation?.uid}` : buddy?.givenName}` : 'Chat'}</IonTitle>
           </IonToolbar>
         </IonHeader>
 
@@ -81,8 +85,8 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
           </IonList>
         </IonPopover>
 
-        <ChatOutput chat={chat} user={user} messageGroups={messageGroups} />
-        <ChatInput chat={chat} user={user} />
+        <ChatOutput conversation={conversation} user={user} messageGroups={messageGroups} />
+        <ChatInput conversation={conversation} user={user} />
       </IonPage>
     );
   } else {

@@ -1,13 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { enableMapSet } from 'immer';
 import 'moment/locale/de';
+
+import store from './store';
 import App from './App';
 import { initialize as initFirebase } from './firebase';
 import * as serviceWorker from './serviceWorker';
 
+enableMapSet();
 initFirebase();
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

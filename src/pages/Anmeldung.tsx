@@ -1,13 +1,15 @@
 import { IonButtons, IonHeader, IonMenuButton, IonPage, IonToolbar } from '@ionic/react';
 import React from 'react';
-import { observer } from 'mobx-react';
-import './Anmeldung.css';
-import { useStores } from '../hooks/use-stores';
+
+import { useTypedSelector } from '../store/rootReducer';
+
 import LoginForm from '../components/LoginForm';
 import LoggedInBox from '../components/LoggedInBox';
 
-const Anmeldung = observer(() => {
-  const { firebaseStore } = useStores();
+import './Anmeldung.css';
+
+const Anmeldung: React.FC = () => {
+  const isWellKnown = useTypedSelector(state => state.authentication.user?.isWellKnown || false);
 
   return (
     <IonPage>
@@ -19,9 +21,9 @@ const Anmeldung = observer(() => {
         </IonToolbar>
       </IonHeader>
 
-      {firebaseStore.isWellKnown ? <LoggedInBox /> : <LoginForm />}
+      {isWellKnown ? <LoggedInBox /> : <LoginForm />}
     </IonPage>
   );
-});
+};
 
 export default Anmeldung;

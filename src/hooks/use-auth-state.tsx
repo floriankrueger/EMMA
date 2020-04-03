@@ -1,33 +1,43 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { FirebaseStore } from '../stores';
+import { AppDispatch } from '../store';
+import { useTypedSelector } from '../store/rootReducer';
+import { userLogin, userLogout } from '../store/authentication/actions';
 import { onAuthStateChanged, signInAnonymously } from '../firebase';
 
-export function useAuthState(firebaseStore: FirebaseStore) {
+export function useAuthState() {
+  const dispatch: AppDispatch = useDispatch();
+  const [uid, user, isLoggedOut] = useTypedSelector(state => [state.authentication.user?.uid, state.authentication.user, state.authentication.isLoggedOut]);
   const [didFetchAuthState, setDidFetchAuthState] = useState(false);
-  const uid = firebaseStore.user?.uid;
 
   // subscribe to auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(user => {
       setDidFetchAuthState(true);
       if (user) {
-        firebaseStore.userSignedIn(user);
+        dispatch(
+          userLogin({
+            uid: user.uid,
+            isAnonymous: user.isAnonymous,
+            isWellKnown: !user.isAnonymous
+          })
+        );
       } else {
-        firebaseStore.userSignedOut();
+        dispatch(userLogout());
       }
     });
     return () => {
       unsubscribe();
     };
-  }, [firebaseStore, uid]);
+  }, [dispatch, uid]);
 
   // sign in anonymously if necessary
   useEffect(() => {
-    if (didFetchAuthState && firebaseStore.isLoggedOut) {
+    if (didFetchAuthState && isLoggedOut) {
       signInAnonymously();
     }
   });
 
-  return firebaseStore.user;
+  return user;
 }

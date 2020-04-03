@@ -1,17 +1,28 @@
 import { useState, useEffect } from 'react';
-import { useStores } from '../hooks';
+import { useDispatch } from 'react-redux';
+
+import { AppDispatch } from '../store';
+import { useTypedSelector } from '../store/rootReducer';
+import { addBuddyAvatarUrl } from '../store/buddy/actions';
+import { getBuddyAvatarUrl } from '../store/buddy/reducers';
 import { getDownloadUrl } from '../firebase';
 
 export function useStorageDownloadUrl(reference: string): string {
-  const { firebaseStore } = useStores();
-  const [src, setSrc] = useState<string>(firebaseStore.buddyAvatarUrl(reference));
+  const dispatch: AppDispatch = useDispatch();
+  const urlFromState = useTypedSelector(state => getBuddyAvatarUrl(state.buddy, reference));
+  const [src, setSrc] = useState(urlFromState);
 
   useEffect(() => {
     getDownloadUrl(reference).then(url => {
       setSrc(url);
-      firebaseStore.buddyAvatarUrlLoaded(reference, url);
+      dispatch(
+        addBuddyAvatarUrl({
+          reference,
+          url
+        })
+      );
     });
-  }, [reference, firebaseStore]);
+  }, [dispatch, reference]);
 
   return src;
 }

@@ -21,6 +21,7 @@
     "@types/redux": "^3.6.0",
     "firebase": "^7.13.0",
     "google-map-react": "^1.1.7",
+    "immer": "^6.0.3",
     "ionicons": "^5.0.0",
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.8",

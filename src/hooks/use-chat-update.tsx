@@ -1,17 +1,40 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { FirebaseStore } from '../stores';
+import { AppDispatch } from '../store';
+import { useTypedSelector } from '../store/rootReducer';
+import { addConversation, updateConversation, deleteConversation, resetConversations } from '../store/conversation/actions';
 import { startObserveChats } from '../firebase';
 
-export function useChatUpdate(firebaseStore: FirebaseStore) {
-  const isLoggedIn = firebaseStore.isLoggedIn;
-  const didFetchBuddys = firebaseStore.didFetchBuddys;
-  const uid = firebaseStore.user?.uid;
+export function useChatUpdate() {
+  const dispatch: AppDispatch = useDispatch();
+  const [isLoggedIn, uid, isWellKnown, didFetchBuddys] = useTypedSelector(state => [
+    state.authentication.isLoggedIn,
+    state.authentication.user?.uid,
+    state.authentication.user?.isWellKnown || false,
+    state.buddy.didFetchBuddys
+  ]);
 
   // subscribe to chat updates
   useEffect(() => {
     if (isLoggedIn && uid && didFetchBuddys) {
-      return startObserveChats(firebaseStore);
+      const stop = startObserveChats(uid, isWellKnown, snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type === 'added') {
+            dispatch(addConversation(change.doc.data()));
+          }
+          if (change.type === 'modified') {
+            dispatch(updateConversation(change.doc.data()));
+          }
+          if (change.type === 'removed') {
+            dispatch(deleteConversation(change.doc.id));
+          }
+        });
+      });
+      return () => {
+        stop();
+        dispatch(resetConversations());
+      };
     }
-  }, [firebaseStore, uid, isLoggedIn, didFetchBuddys]);
+  }, [dispatch, uid, isLoggedIn, isWellKnown, didFetchBuddys]);
 }

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { observer } from 'mobx-react';
 import { IonFooter, IonInput, IonButton } from '@ionic/react';
-import { TChat, TUser } from '../models';
+
+import { TConversation, TUser } from '../models';
 import { sendMessage } from '../firebase';
+
 import './ChatInput.css';
 
 interface ChatInputProps {
-  chat: TChat;
+  conversation: TConversation;
   user: TUser;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ chat, user }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ conversation, user }) => {
   const keyPressed = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       send();
@@ -19,12 +20,12 @@ const ChatInput: React.FC<ChatInputProps> = ({ chat, user }) => {
 
   const [message, setMessage] = useState('');
   const send = () => {
-    if (chat.isArchived) {
+    if (conversation.isArchived) {
       console.error('Cannot send message to archived chat');
       return;
     }
 
-    sendMessage(user.uid, chat.cid, message)
+    sendMessage(user.uid, conversation.cid, message)
       .then(() => {
         setMessage('');
       })
@@ -36,17 +37,17 @@ const ChatInput: React.FC<ChatInputProps> = ({ chat, user }) => {
   return (
     <IonFooter id='message-input'>
       <IonInput
-        disabled={chat.isArchived}
+        disabled={conversation.isArchived}
         placeholder='Deine Nachricht'
         value={message}
         onKeyPress={e => keyPressed(e)}
         onIonChange={e => setMessage(e.detail.value || '')}
       />
-      <IonButton disabled={chat.isArchived} onClick={send}>
+      <IonButton disabled={conversation.isArchived} onClick={send}>
         Absenden
       </IonButton>
     </IonFooter>
   );
 };
 
-export default observer(ChatInput);
+export default ChatInput;

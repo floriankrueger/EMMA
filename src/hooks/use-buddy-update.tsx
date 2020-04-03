@@ -1,16 +1,35 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { FirebaseStore } from '../stores';
+import { AppDispatch } from '../store';
+import { useTypedSelector } from '../store/rootReducer';
+import { addBuddy, updateBuddy, deleteBuddy, resetBuddys } from '../store/buddy/actions';
 import { startObserveBuddys } from '../firebase';
 
-export function useBuddyUpdate(firebaseStore: FirebaseStore) {
-  const isLoggedIn = firebaseStore.isLoggedIn;
-  const uid = firebaseStore.user?.uid;
+export function useBuddyUpdate() {
+  const dispatch: AppDispatch = useDispatch();
+  const [isLoggedIn, uid] = useTypedSelector(state => [state.authentication.isLoggedIn, state.authentication.user?.uid]);
 
   // subscribe to buddy updates
   useEffect(() => {
     if (isLoggedIn) {
-      return startObserveBuddys(firebaseStore);
+      let stop = startObserveBuddys(snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type === 'added') {
+            dispatch(addBuddy(change.doc.data()));
+          }
+          if (change.type === 'modified') {
+            dispatch(updateBuddy(change.doc.data()));
+          }
+          if (change.type === 'removed') {
+            dispatch(deleteBuddy(change.doc.id));
+          }
+        });
+      });
+      return () => {
+        stop();
+        dispatch(resetBuddys());
+      };
     }
-  }, [firebaseStore, isLoggedIn, uid]);
+  }, [dispatch, isLoggedIn, uid]);
 }

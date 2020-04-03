@@ -1,9 +1,10 @@
-import { IonContent, IonThumbnail, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonFooter } from '@ionic/react';
 import React from 'react';
-import MenuHeader from './MenuHeader';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { observer } from 'mobx-react';
-import { useStores } from '../hooks';
+import { IonContent, IonThumbnail, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonFooter } from '@ionic/react';
+
+import { useTypedSelector } from '../store/rootReducer';
+import MenuHeader from './MenuHeader';
+
 import './Menu.css';
 
 interface MenuProps extends RouteComponentProps {}
@@ -68,7 +69,8 @@ const appSecondaryPages: SecondaryPage[] = [
 ];
 
 const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
-  const { firebaseStore } = useStores();
+  const isWellKnown = useTypedSelector(state => state.authentication.user?.isWellKnown || false);
+
   return (
     <IonMenu contentId='main' type='overlay'>
       {/* Menu */}
@@ -76,7 +78,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
         <MenuHeader />
         <IonList id='main-menu'>
           {appPages.map((appPage, index) => {
-            if (appPage.wellKnownUsersOnly && !firebaseStore.isWellKnown) {
+            if (appPage.wellKnownUsersOnly && !isWellKnown) {
               return null;
             }
             return (
@@ -103,7 +105,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
       <IonFooter>
         <IonList id='secondary-menu'>
           {appSecondaryPages.map((secondaryPage, index) => {
-            if (secondaryPage.wellKnownUsersOnly && !firebaseStore.isWellKnown) {
+            if (secondaryPage.wellKnownUsersOnly && !isWellKnown) {
               return null;
             }
             return (
@@ -126,4 +128,4 @@ const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
   );
 };
 
-export default observer(withRouter(Menu));
+export default withRouter(Menu);

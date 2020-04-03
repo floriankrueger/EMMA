@@ -13,6 +13,7 @@ export interface TBuddy {
   focus: string[];
   qualifications: string[];
   bio: string;
+  isAvailable: boolean;
 }
 
 export const BuddyConverter = {
@@ -27,7 +28,8 @@ export const BuddyConverter = {
       languages: buddy.languages,
       focus: buddy.focus,
       qualifications: buddy.qualifications,
-      bio: buddy.bio
+      bio: buddy.bio,
+      isAvailable: buddy.isAvailable
     };
   },
   fromFirestore(snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions): TBuddy {
@@ -43,7 +45,8 @@ export const BuddyConverter = {
       languages: data.languages,
       focus: data.focus,
       qualifications: data.qualifications,
-      bio: data.bio
+      bio: data.bio,
+      isAvailable: data.isAvailable || false
     } as TBuddy;
   }
 };

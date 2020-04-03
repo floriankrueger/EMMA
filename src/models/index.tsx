@@ -7,7 +7,6 @@ export * from './institution-location';
 export * from './business-hours';
 export * from './user';
 export * from './buddy';
-export * from './chat';
-export * from './chat-last-message';
+export * from './conversation';
 export * from './message';
 export * from './message-group';
