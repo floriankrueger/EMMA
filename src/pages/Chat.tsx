@@ -14,13 +14,12 @@ import {
   IonList,
   IonItem,
   IonLabel,
-  IonRouterLink
+  IonRouterLink,
 } from '@ionic/react';
 import { RouteComponentProps, withRouter, useHistory } from 'react-router-dom';
 import './Chat.css';
 import { useMessageGroups } from '../hooks';
-import { useTypedSelector } from '../store/rootReducer';
-import { findConversation } from '../store/conversation/reducers';
+import { useTypedSelector, findConversation } from '../store/';
 import { archiveChat } from '../firebase';
 import ChatOutput from '../components/ChatOutput';
 import ChatInput from '../components/ChatInput';
@@ -29,12 +28,12 @@ import EmptyStateContainer from '../components/EmptyStateContainer';
 interface ChatProps extends RouteComponentProps<{ cid: string }> {}
 
 const Chat: React.FC<ChatProps> = ({ match }) => {
-  const [isLoggedIn, user, conversation] = useTypedSelector(state => [
+  const [isLoggedIn, user, conversation] = useTypedSelector((state) => [
     state.authentication.isLoggedIn,
     state.authentication.user,
-    findConversation(state.conversation, match.params.cid)
+    findConversation(state.conversation, match.params.cid),
   ]);
-  const [buddy] = useTypedSelector(state => [state.buddy.buddys.find(b => b.bid === conversation?.bid)]);
+  const [buddy] = useTypedSelector((state) => [state.buddy.buddys.find((b) => b.bid === conversation?.bid)]);
 
   const messageGroups = useMessageGroups(isLoggedIn, match.params.cid);
   const userIsBuddy = conversation && user && conversation.bid === user.uid;
@@ -55,7 +54,7 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
       .then(() => {
         history.push('/chats');
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Failed to archive chat', error);
       });
   };
@@ -69,7 +68,7 @@ const Chat: React.FC<ChatProps> = ({ match }) => {
               <IonMenuButton />
             </IonButtons>
             <IonButtons slot='primary'>
-              <IonButton color='primary' onClick={event => openPopover(event)}>
+              <IonButton color='primary' onClick={(event) => openPopover(event)}>
                 <IonIcon slot='icon-only' ios={ellipsisHorizontal} md={ellipsisVertical} />
               </IonButton>
             </IonButtons>

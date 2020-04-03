@@ -1,12 +1,11 @@
-import produce, { Draft, castDraft, Immutable } from 'immer';
+import produce, { Draft } from 'immer';
 
 import { BuddyState, BuddyActionTypes, ADD_BUDDY, UPDATE_BUDDY, DELETE_BUDDY, RESET_BUDDYS, ADD_BUDDY_AVATAR_URL } from './types';
-import { TBuddy } from '../../models';
 
 const initialState: BuddyState = {
   didFetchBuddys: false,
   buddys: [],
-  buddyAvatarUrls: {}
+  buddyAvatarUrls: {},
 };
 
 const buddyReducer = produce((draft: Draft<BuddyState>, action: BuddyActionTypes) => {
@@ -17,11 +16,11 @@ const buddyReducer = produce((draft: Draft<BuddyState>, action: BuddyActionTypes
       return;
     case UPDATE_BUDDY:
       draft.didFetchBuddys = true;
-      draft.buddys = draft.buddys.map(b => (b.bid === action.payload.bid ? action.payload : b));
+      draft.buddys = draft.buddys.map((b) => (b.bid === action.payload.bid ? action.payload : b));
       return;
     case DELETE_BUDDY:
       draft.didFetchBuddys = true;
-      draft.buddys = draft.buddys.filter(b => b.bid !== action.payload);
+      draft.buddys = draft.buddys.filter((b) => b.bid !== action.payload);
       return;
     case RESET_BUDDYS:
       draft.didFetchBuddys = false;
@@ -33,14 +32,4 @@ const buddyReducer = produce((draft: Draft<BuddyState>, action: BuddyActionTypes
   }
 }, initialState);
 
-const sortedBuddys = (state: Immutable<BuddyState>): TBuddy[] => {
-  const buddys = Array.from(state.buddys.values());
-  buddys.sort((lhs, rhs) => (lhs.isAvailable && rhs.isAvailable ? 0 : lhs.isAvailable ? -1 : 1));
-  return castDraft(buddys);
-};
-
-const getBuddyAvatarUrl = (state: Immutable<BuddyState>, reference: string): string => {
-  return state.buddyAvatarUrls[reference] || 'assets/icon_buddys.svg';
-};
-
-export { buddyReducer, sortedBuddys, getBuddyAvatarUrl };
+export { buddyReducer };

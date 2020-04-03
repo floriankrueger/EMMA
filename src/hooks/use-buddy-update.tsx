@@ -1,20 +1,19 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { AppDispatch } from '../store';
-import { useTypedSelector } from '../store/rootReducer';
+import { AppDispatch, useTypedSelector } from '../store';
 import { addBuddy, updateBuddy, deleteBuddy, resetBuddys } from '../store/buddy/actions';
 import { startObserveBuddys } from '../firebase';
 
 export function useBuddyUpdate() {
   const dispatch: AppDispatch = useDispatch();
-  const [isLoggedIn, uid] = useTypedSelector(state => [state.authentication.isLoggedIn, state.authentication.user?.uid]);
+  const [isLoggedIn, uid] = useTypedSelector((state) => [state.authentication.isLoggedIn, state.authentication.user?.uid]);
 
   // subscribe to buddy updates
   useEffect(() => {
     if (isLoggedIn) {
-      let stop = startObserveBuddys(snapshot => {
-        snapshot.docChanges().forEach(change => {
+      let stop = startObserveBuddys((snapshot) => {
+        snapshot.docChanges().forEach((change) => {
           if (change.type === 'added') {
             dispatch(addBuddy(change.doc.data()));
           }

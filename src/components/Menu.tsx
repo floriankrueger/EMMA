@@ -2,7 +2,7 @@ import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { IonContent, IonThumbnail, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonFooter } from '@ionic/react';
 
-import { useTypedSelector } from '../store/rootReducer';
+import { useTypedSelector } from '../store';
 import MenuHeader from './MenuHeader';
 
 import './Menu.css';
@@ -21,32 +21,32 @@ const appPages: AppPage[] = [
     title: 'Aktuelles',
     url: '/aktuelles',
     icon: 'assets/icon_aktuelles.svg',
-    wellKnownUsersOnly: false
+    wellKnownUsersOnly: false,
   },
   {
     title: 'EMMA:Buddys',
     url: '/buddys',
     icon: 'assets/icon_buddys.svg',
-    wellKnownUsersOnly: false
+    wellKnownUsersOnly: false,
   },
   {
     title: 'Chats',
     url: '/chats',
     icon: 'assets/icon_chats.svg',
-    wellKnownUsersOnly: false
+    wellKnownUsersOnly: false,
   },
   {
     title: 'Karte',
     url: '/karte',
     icon: 'assets/icon_karte.svg',
-    wellKnownUsersOnly: false
+    wellKnownUsersOnly: false,
   },
   {
     title: 'F.A.Q.',
     url: '/faq',
     icon: 'assets/icon_faq.svg',
-    wellKnownUsersOnly: false
-  }
+    wellKnownUsersOnly: false,
+  },
 ];
 
 interface SecondaryPage {
@@ -59,17 +59,17 @@ const appSecondaryPages: SecondaryPage[] = [
   {
     title: 'Abmelden',
     url: '/anmeldung',
-    wellKnownUsersOnly: true
+    wellKnownUsersOnly: true,
   },
   {
     title: 'Impressum',
     url: '/impressum',
-    wellKnownUsersOnly: false
-  }
+    wellKnownUsersOnly: false,
+  },
 ];
 
 const Menu: React.FunctionComponent<MenuProps> = ({ location }) => {
-  const isWellKnown = useTypedSelector(state => state.authentication.user?.isWellKnown || false);
+  const isWellKnown = useTypedSelector((state) => state.authentication.user?.isWellKnown || false);
 
   return (
     <IonMenu contentId='main' type='overlay'>

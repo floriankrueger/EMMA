@@ -1,7 +1,7 @@
 import React from 'react';
 import { IonList, IonSpinner } from '@ionic/react';
 
-import { useTypedSelector, conversationsWithBuddys } from '../store/rootReducer';
+import { useTypedSelector, conversationsWithBuddys } from '../store';
 
 import PageContent from './PageContent';
 import EmptyStateContainer from './EmptyStateContainer';
@@ -10,10 +10,10 @@ import ChatListItem from './ChatListItem';
 import './ChatList.css';
 
 const ChatList: React.FC = () => {
-  let [uid, didFetchConversations, conversations] = useTypedSelector(state => [
+  let [uid, didFetchConversations, conversations] = useTypedSelector((state) => [
     state.authentication.user?.uid,
     state.conversation.didFetchConversations,
-    conversationsWithBuddys(state)
+    conversationsWithBuddys(state),
   ]);
   if (conversations.length === 0) {
     if (didFetchConversations) {
@@ -24,7 +24,7 @@ const ChatList: React.FC = () => {
     return (
       <PageContent>
         <IonList>
-          {conversations.map(tuple => {
+          {conversations.map((tuple) => {
             const [conversation, buddy] = tuple;
             return <ChatListItem key={conversation.cid} conversation={conversation} buddy={buddy} userIsBuddy={buddy.bid === uid} />;
           })}
