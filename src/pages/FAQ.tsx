@@ -5,11 +5,13 @@ import './FAQ.css';
 import PageHeader from '../components/PageHeader';
 import PageContent from '../components/PageContent';
 import { useStores } from '../hooks/use-stores';
+import { useFetchBlogEntries } from '../hooks/use-fetch-blog-entries';
 import { observer } from 'mobx-react';
 import { HashLink } from 'react-router-hash-link';
 
 const FAQ = observer(() => {
   const { faqStore } = useStores();
+  useFetchBlogEntries();
 
   return (
     <IonPage>
