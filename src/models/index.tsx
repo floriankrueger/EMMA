@@ -10,3 +10,4 @@ export * from './buddy';
 export * from './conversation';
 export * from './message';
 export * from './message-group';
+export * from './image';

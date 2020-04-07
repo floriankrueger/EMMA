@@ -1,13 +1,14 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar } from '@ionic/react';
 import React from 'react';
-import { observer } from 'mobx-react';
-import './Aktuelles.css';
+
+import { useFetchBlogEntries } from '../hooks';
 import PageHeader from '../components/PageHeader';
 import BlogPostPreviewList from '../components/BlogPostPreviewList';
-import { useStores } from '../hooks/use-stores';
 
-const Aktuelles = observer(() => {
-  const { blogStore } = useStores();
+import './Aktuelles.css';
+
+const Aktuelles: React.FC = () => {
+  const posts = useFetchBlogEntries();
 
   return (
     <IonPage>
@@ -25,10 +26,10 @@ const Aktuelles = observer(() => {
           title='Aktuelles'
           copy='Auf dieser Seite findest du regelmäßig neue Beiträge zu Themen wie Erziehung, Gesundheit oder Krisenbewältigung.'
         />
-        <BlogPostPreviewList blogPostPreviewItems={blogStore.currentBlogEntries} />
+        <BlogPostPreviewList blogPostPreviewItems={posts} />
       </IonContent>
     </IonPage>
   );
-});
+};
 
 export default Aktuelles;

@@ -1,8 +1,10 @@
+import { TImage } from './image';
+
 export interface TBlogPostPreview {
   title: string;
   slug: string;
-  heroImage: string;
+  heroImage: TImage | null;
   description: string;
-  publishDate: Date;
+  publishDate: number;
   tags: string[];
 }

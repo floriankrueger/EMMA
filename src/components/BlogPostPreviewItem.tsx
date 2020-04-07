@@ -10,12 +10,16 @@ interface BlogPostPreviewItemProps {
 const BlogPostPreviewItem: React.FC<BlogPostPreviewItemProps> = ({ blogPostPreview }) => {
   return (
     <div className='blog-post-preview'>
-      <Link to={`/aktuelles/${blogPostPreview.slug}`}>
-        <img src={blogPostPreview.heroImage} alt='' />
-      </Link>
+      {blogPostPreview.heroImage ? (
+        <Link to={`/aktuelles/${blogPostPreview.slug}`}>
+          <img src={blogPostPreview.heroImage.url} alt={blogPostPreview.heroImage.alt} />
+        </Link>
+      ) : null}
       <h2>{blogPostPreview.title}</h2>
       <p>{blogPostPreview.description}</p>
-      <Link to={`/aktuelles/${blogPostPreview.slug}`}>weiterlesen</Link>
+      <Link className='read-more' to={`/aktuelles/${blogPostPreview.slug}`}>
+        weiterlesen
+      </Link>
     </div>
   );
 };

@@ -2,6 +2,12 @@
   display: flex;
   align-items: stretch;
   flex-direction: column;
+  margin-bottom: 1em;
+}
+
+.blog-post-preview h2 {
+  font-size: 29px;
+  letter-spacing: 0;
 }
 
 .blog-post-preview a {
@@ -13,4 +19,8 @@
 .blog-post-preview img {
   object-fit: cover;
   height: 312px;
+}
+
+.blog-post-preview .read-more {
+  text-align: right;
 }
