@@ -16,3 +16,15 @@ ul.faq-link-list li {
 .faq-entry {
   margin-top: 50px;
 }
+
+.faq-link-list button {
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  color: #16a085;
+}
+
+.faq-entry button {
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  color: #16a085;
+}

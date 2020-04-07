@@ -1,17 +1,39 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonToolbar } from '@ionic/react';
-import React from 'react';
-import ReactMarkdown from 'react-markdown';
-import './FAQ.css';
+import React, { useRef } from 'react';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+
+import { useTypedSelector, sortedFAQEntries, sortedFAQLinks } from '../store';
+import { useFetchFAQEntries } from '../hooks';
 import PageHeader from '../components/PageHeader';
 import PageContent from '../components/PageContent';
-import { useStores } from '../hooks/use-stores';
-import { useFetchBlogEntries } from '../hooks/use-fetch-blog-entries';
-import { observer } from 'mobx-react';
-import { HashLink } from 'react-router-hash-link';
 
-const FAQ = observer(() => {
-  const { faqStore } = useStores();
-  useFetchBlogEntries();
+import './FAQ.css';
+
+type References = { [key: string]: React.RefObject<HTMLDivElement> };
+
+const FAQ: React.FC = () => {
+  useFetchFAQEntries();
+  const [entries, links] = useTypedSelector((state) => [sortedFAQEntries(state.faq), sortedFAQLinks(state.faq)]);
+  const topRef = useRef<HTMLDivElement>(null);
+
+  const refs: References = links.reduce<References>((obj, link) => {
+    obj[link.slug] = React.createRef();
+    return obj;
+  }, {});
+
+  const scrollToTop = () => {
+    topRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
+
+  const scrollToSlug = (slug: string) => {
+    refs[slug].current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
 
   return (
     <IonPage>
@@ -24,6 +46,7 @@ const FAQ = observer(() => {
       </IonHeader>
 
       <IonContent>
+        <div ref={topRef} />
         <PageHeader assetName='faq' title='F.A.Q.' />
         <PageContent>
           <p className='lead'>Als Zielgruppe wenden wir uns an Eltern und Erziehungsberechtigte, die niederschwelligen Beratungsbedarf haben.</p>
@@ -36,25 +59,27 @@ const FAQ = observer(() => {
           </p>
           <h5>Inhalt</h5>
           <ul className='faq-link-list' id='faq-index'>
-            {faqStore.links.map((linkData, index) => {
+            {links.map((linkData, index) => {
               return (
                 <li key={index}>
                   <span>{index + 1}. </span>
-                  <HashLink to={`#faq-${linkData.slug}`}>{linkData.title}</HashLink>
+                  <button type='button' onClick={() => scrollToSlug(`${linkData.slug}`)}>
+                    {linkData.title}
+                  </button>
                 </li>
               );
             })}
           </ul>
-          {faqStore.entries.map((entry, index) => {
+          {entries.map((entry, index) => {
             return (
-              <div className='faq-entry' key={index}>
+              <div className='faq-entry' key={index} ref={refs[entry.slug]}>
                 <h6>
                   {index + 1}. {entry.question}
-                  <HashLink id={`faq-${entry.slug}`} className='to-top' to='#page-header'>
+                  <button type='button' onClick={() => scrollToTop()} id={`faq-${entry.slug}`} className='to-top'>
                     nach oben
-                  </HashLink>
+                  </button>
                 </h6>
-                <ReactMarkdown source={entry.answer} />
+                {documentToReactComponents(entry.answer)}
               </div>
             );
           })}
@@ -62,6 +87,6 @@ const FAQ = observer(() => {
       </IonContent>
     </IonPage>
   );
-});
+};
 
 export default FAQ;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { AppDispatch, useTypedSelector } from '../store';
+import { AppDispatch } from '../store';
 import { client, getBlogPosts } from '../contentful';
 
 export function useFetchBlogEntries() {

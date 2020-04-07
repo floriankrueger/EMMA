@@ -14,3 +14,4 @@ export default store;
 export { useTypedSelector, conversationsWithBuddys } from './selectors';
 export { sortedBuddys, getBuddyAvatarUrl } from './buddy/selectors';
 export { sortedConversations, findConversation } from './conversation/selectors';
+export { sortedFAQEntries, sortedFAQLinks } from './faq/selectors';
